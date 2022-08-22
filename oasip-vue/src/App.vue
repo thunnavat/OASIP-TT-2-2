@@ -13,8 +13,10 @@
         <div class="text-sm sm:flex-grow font-medium">
           <router-link :to="{name:'Home'}" class="block mt-4 sm:inline-block sm:mt-0 text-white hover:text-gray-300 ml-4">Home</router-link>
           <router-link :to="{name:'EventCategory'}" class="block mt-4 sm:inline-block sm:mt-0 text-white hover:text-gray-300 ml-4">EventCategory</router-link>
+          <router-link :to="{name:'User'}" class="block mt-4 sm:inline-block sm:mt-0 text-white hover:text-gray-300 ml-4">User</router-link>
           <router-link :to="{name:'AboutUs'}" class="block mt-4 sm:inline-block sm:mt-0 text-white hover:text-gray-300 ml-4">About Us</router-link>
-        </div> 
+          <router-link :to="{name:'AddUser'}" class="absolute right-12 mt-4 sm:inline-block sm:mt-0 text-white hover:text-gray-300 ml-4 ">Add User</router-link>
+        </div>
       </div>
     </nav>
   </div>
