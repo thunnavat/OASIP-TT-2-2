@@ -1,5 +1,5 @@
 <script setup>
-
+import {ref} from 'vue'
 
 defineEmits(['detail','deleteUser','editUser'])
 defineProps({
@@ -8,6 +8,7 @@ defineProps({
    default: []
   }
   })
+
 </script>
  
 <template>
@@ -30,13 +31,14 @@ defineProps({
         <li class="relative  mt-6">
           <button @click="$emit('deleteUser', user.id)" class="text-white bg-black mr-4 border border-solid hover:bg-[#855B52]  active:bg-cyan-600 font-bold uppercase text-sm py-3 rounded outline-none focus:outline-none ease-linear transition-all duration-150 active show px-3">
             DELETE</button>
-            <button @click="$emit('editUser', user)" class="text-white bg-black mr-4 border border-solid hover:bg-[#855B52]  active:bg-cyan-600 font-bold uppercase text-sm py-3 rounded outline-none focus:outline-none ease-linear transition-all duration-150 active show px-3">
+          <button @click="$emit('editUser', user)" class="text-white bg-black mr-4 border border-solid hover:bg-[#855B52]  active:bg-cyan-600 font-bold uppercase text-sm py-3 rounded outline-none focus:outline-none ease-linear transition-all duration-150 active show px-3">
             EDIT</button>
-        </li>
- </ul>
-</div>
-</div>
-</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
 </template>
  
 <style>

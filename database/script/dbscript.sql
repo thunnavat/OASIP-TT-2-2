@@ -1,5 +1,8 @@
 CREATE DATABASE oasip DEFAULT CHARACTER SET utf8;
 USE oasip;
+CREATE USER 'test221'@'%' IDENTIFIED by 'oasiptt2';
+GRANT ALL PRIVILEGES ON *.* TO 'test221'@'%';
+FLUSH PRIVILEGES;
 CREATE TABLE eventcategories (
  eventCategoryId INT NOT NULL AUTO_INCREMENT,
  eventCategoryName VARCHAR(100) NOT NULL,
@@ -28,6 +31,7 @@ CREATE TABLE users (
   userId INT NOT NULL AUTO_INCREMENT,
   name VARCHAR(100) NOT NULL,
   email VARCHAR(50) NOT NULL,
+  password VARCHAR(90) NOT NULL,
   role ENUM('admin', 'lecturer', 'student') NOT NULL DEFAULT 'student',
   createdOn TIMESTAMP NOT NULL DEFAULT current_timestamp,
   updatedOn TIMESTAMP NOT NULL DEFAULT current_timestamp on update current_timestamp,
@@ -65,5 +69,3 @@ INSERT INTO events (bookingName,bookingEmail,eventStartTime,eventDuration,eventC
 values ('Nattapon Chusriwan กลุ่ม US-5','nattapon_champ@gmail.com','2022-10-02 15:10:00',30,'2');
 INSERT INTO events (bookingName,bookingEmail,eventStartTime,eventDuration,eventCategoryId)
 values ('ไชยา ชูเจริญ กลุ่ม KP-5','chaitya_chu@gmail.com','2022-10-04 12:20:00',30,'1');
-INSERT INTO users (name,email,role)
-values ('Thunnavat Chudum','thunnavat@gmail.com','student');

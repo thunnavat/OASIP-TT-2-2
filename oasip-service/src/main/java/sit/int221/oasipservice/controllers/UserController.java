@@ -3,6 +3,7 @@ package sit.int221.oasipservice.controllers;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import sit.int221.oasipservice.dtos.CreateUserDTO;
+import sit.int221.oasipservice.dtos.UpdateUserDTO;
 import sit.int221.oasipservice.entities.User;
 import sit.int221.oasipservice.services.UserService;
 
@@ -30,5 +31,10 @@ public class UserController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Integer id) {
         service.delete(id);
+    }
+
+    @PutMapping("/{id}")
+    public User update(@Valid @RequestBody UpdateUserDTO updateUser, @PathVariable Integer id) {
+        return service.update(updateUser, id);
     }
 }
