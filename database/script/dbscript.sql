@@ -31,7 +31,7 @@ CREATE TABLE users (
   userId INT NOT NULL AUTO_INCREMENT,
   name VARCHAR(100) NOT NULL,
   email VARCHAR(50) NOT NULL,
-  password VARCHAR(90) NOT NULL,
+  password VARCHAR(100) NOT NULL,
   role ENUM('admin', 'lecturer', 'student') NOT NULL DEFAULT 'student',
   createdOn TIMESTAMP NOT NULL DEFAULT current_timestamp,
   updatedOn TIMESTAMP NOT NULL DEFAULT current_timestamp on update current_timestamp,
