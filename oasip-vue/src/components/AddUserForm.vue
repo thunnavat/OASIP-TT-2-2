@@ -68,7 +68,6 @@ const roles = ["admin" , "lecturer" , "student"]
 <template>
 
 <div>
-  {{newUser.role}}
 <h1 class="text-xl font-bold mb-3 ml-4">Add user</h1>
 <div class="ml-2 mb-5">
   <form>

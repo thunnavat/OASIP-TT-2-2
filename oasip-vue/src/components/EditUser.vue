@@ -59,7 +59,7 @@ const checkEmail = () => {
 <div>
   <h1 class="text-xl font-bold mb-3 ml-4">Edit user</h1>
 <div class="ml-2 mb-5">
-    <span v-show="showNameError" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mx-20"> {{ nameErrorMsg }} <button @click="showNameError = false">x</button></span>
+    <span v-show="showNameError" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded absolute mx-20"> {{ nameErrorMsg }} <button @click="showNameError = false">x</button></span>
     <span>Name : </span>
     <input type="text"  maxlength="101" class="border-2 border-black text-black ml-1 mt-2 bg-zinc-300 disabled:opacity-50 disabled:hover:cursor-not-allowed	" v-model="editUser.name" :onchange="checkName" @click="showNameError = false">
     <span v-show="showEmailError" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded absolute mx-20"> {{ emailErrorMsg }} <button @click="showEmailError = false">x</button></span> &nbsp;  

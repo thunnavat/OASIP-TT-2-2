@@ -4,15 +4,24 @@ import UserList from '../components/UserList.vue'
 import UserDetail from '../components/UserDetail.vue'
 import EditUser from '../components/EditUser.vue'
 
-const url = import.meta.env.PROD ?  import.meta.env.VITE_API_URL : 'http://localhost:8080/api';
+const url = import.meta.env.PROD ?  import.meta.env.VITE_API_URL : '/api';
 const users = ref([])
 const emptyMsg = 'No Users'
 const user = ref([])
+const token = localStorage.getItem('token')
 
 const getUsers = async () => {
-  const res = await fetch(`${url}/users`)
+  const res = await fetch(`${url}/users`, {
+    method: 'GET',
+    headers: {
+      'Authorization': token
+    }
+  })
   if(res.status === 200) {
     users.value = await res.json()
+  }
+  else if(res.status === 401){
+
   } else console.log('cannot get users')
 }
 
@@ -95,28 +104,34 @@ const checkUnique = ((name, email) => {
 </script>
  
 <template>
-
-<div class="box-border p-4">
-<div class="font-semibold flex justify-center items-center text-black box-content bg-[#c4c4c4] h-96" v-if="users.length === 0">
+   <div v-if="token === null" class="text-xl">
+    You do not have permission do you want to 
+    <router-link :to="{name:'Login'}" class="text-blue-700 font-semibold underline">Login</router-link>
+    or <router-link :to="{name:'AddUser'}" class="text-blue-700 font-semibold underline">Sign-up</router-link>
+  </div>
+  <div v-else>
+    <div class="box-border p-4">
+      <div class="font-semibold flex justify-center items-center text-black box-content bg-[#c4c4c4] h-96" v-if="users.length === 0 ">
         <span>{{ emptyMsg }}</span>
       </div>
-<div v-else>
-  <div v-if="editMode === true">
-    <edit-user :user="newestUser"  @updateUser="updateUser" @cancelform="cancelform"/>
+      <div v-else>
+        <div v-if="editMode === true">
+          
+          <edit-user :user="newestUser"  @updateUser="updateUser" @cancelform="cancelform"/>
+        </div>
+        <!-- <span>{{ users }}</span> -->
+        <user-list :users="users" @detail="getUserDetail" @deleteUser="removeUser" @editUser="toEditMode"/>
+        
+      </div>
+      <div v-if="isModal">
+        <user-detail :user="currentUser" @close="closeModal" />
+      </div>
+      <!--  -->
+      {{ token }}
+    </div>
+    
   </div>
-  <!-- <span>{{ users }}</span> -->
-  <user-list :users="users" @detail="getUserDetail" @deleteUser="removeUser" @editUser="toEditMode"/>
-  
-</div>
-<div v-if="isModal">
-  <user-detail :user="currentUser" @close="closeModal" />
-  </div>
-<!--  -->
-
-
-</div>
-
-</template>
+  </template>
 
 <style>
 

@@ -5,17 +5,25 @@ import ShowDetail from '../components/ShowDetail.vue'
 import dayjs from 'dayjs'
 import AddEditEvent from '../components/AddEditEvent.vue'
 
-const url = import.meta.env.PROD ?  import.meta.env.VITE_API_URL : 'http://localhost:8080/api';
+
+const url = import.meta.env.PROD ?  import.meta.env.VITE_API_URL : '/api';
 const eventViews = ['ALL', 'DAY', 'CATEGORY', 'UPCOMING', 'PAST']
 const events = ref([])
 const event = ref([])
 const eventCategories = ref([])
 const isModal = ref(false)
 const clickForBooking = ref(false)
+const token = localStorage.getItem('token')
 console.log(url);
 
 const getEvents = async () => {
-  const res = await fetch(`${url}/events`)
+  const res = await fetch(`${url}/events` ,{
+    method: 'GET',
+    headers: {
+      'Authorization': token
+    }
+  })
+  
   if (res.status === 200) {
     events.value = await res.json()
     console.log('Get data')
@@ -151,6 +159,12 @@ console.log(unique);
 
 <template>
 <div>
+  <div v-if="token === null" class="text-xl">
+    You do not have permission do you want to 
+    <router-link :to="{name:'Login'}" class="text-blue-700 font-semibold underline">Login</router-link>
+    or <router-link :to="{name:'AddUser'}" class="text-blue-700 font-semibold underline">Sign-up</router-link>
+  </div>
+  <div v-else>
   <div class="mt-4 flex justify-end">
     <button @click="clickForBooking = !clickForBooking" class="text-white bg-black mr-4 border border-solid hover:bg-[#855B52]  active:bg-cyan-600 font-bold uppercase text-sm py-3 rounded outline-none focus:outline-none ease-linear transition-all duration-150 active show px-3"> BOOKING </button>
     <!-- Select Bar -->
@@ -192,6 +206,7 @@ console.log(unique);
       </div>
     </div>
   </div>
+</div>
 </div>
 </template>
  

@@ -10,18 +10,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class ApplicationConfig {
     @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedMethods("GET", "PUT", "DELETE", "POST");
-            }
-        };
+    public Argon2PasswordEncoder argon2PasswordEncoder() {
+        return new Argon2PasswordEncoder();
     }
-
     @Bean
     public ModelMapper modelMapper() { return new ModelMapper(); }
 
-    @Bean
-    public Argon2PasswordEncoder argon2PasswordEncoder() { return new Argon2PasswordEncoder(); }
 }
