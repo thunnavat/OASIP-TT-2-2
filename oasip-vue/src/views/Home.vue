@@ -5,7 +5,6 @@ import ShowDetail from '../components/ShowDetail.vue'
 import dayjs from 'dayjs'
 import AddEditEvent from '../components/AddEditEvent.vue'
 
-
 const url = import.meta.env.PROD ?  import.meta.env.VITE_API_URL : '/api';
 const eventViews = ['ALL', 'DAY', 'CATEGORY', 'UPCOMING', 'PAST']
 const events = ref([])
@@ -15,7 +14,6 @@ const isModal = ref(false)
 const clickForBooking = ref(false)
 const token = localStorage.getItem('token')
 console.log(url);
-
 const getEvents = async () => {
   const res = await fetch(`${url}/events` ,{
     method: 'GET',
@@ -42,7 +40,6 @@ onBeforeMount(async () => {
   sortingEvent(events)
   event.value = events.value
 })
-
 const removeEvent = async (deleteEventId) => {
   if (confirm(`Do you want to delete event-id: ${deleteEventId} `) === true) {
     const res = await fetch(`${url}/events/${deleteEventId}` , {

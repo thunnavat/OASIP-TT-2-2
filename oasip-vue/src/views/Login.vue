@@ -5,6 +5,8 @@ import router from '../router';
 
 const url = import.meta.env.PROD ?  import.meta.env.VITE_API_URL : '/api';
 
+const to = router.currentRoute;
+
 
 // const cancelform = () => {
 //   newestUser.value = {}
@@ -23,6 +25,10 @@ const match = async (login) => {
     token.value = await res.json()
     localStorage.setItem('token', 'Bearer ' + token.value.token)
     alert('Login Successful')
+    router.replace({name: 'Home'})
+    setTimeout(() => {
+      router.go(0)
+    });
   }else if (res.status === 401){
     alert('Password Incorrect') 
   }else if (res.status === 404){

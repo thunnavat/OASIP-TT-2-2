@@ -127,7 +127,6 @@ const checkUnique = ((name, email) => {
         <user-detail :user="currentUser" @close="closeModal" />
       </div>
       <!--  -->
-      {{ token }}
     </div>
     
   </div>
