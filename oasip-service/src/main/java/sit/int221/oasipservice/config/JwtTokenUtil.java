@@ -24,8 +24,8 @@ public class JwtTokenUtil implements Serializable {
     @Value("${jwt.secret}")
     private String secret;
 
-//    @Value ("30000")
-//    private Integer jwtExpirationMs;
+    @Value ("30000")
+    private Integer jwtExpirationMs;
 //
 //    @Value("")
 //    private Integer  refreshExpirationDateInMs;
