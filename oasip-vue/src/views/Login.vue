@@ -13,7 +13,7 @@ const to = router.currentRoute;
 // }
 
 let token = ref('')
-const match = async (login) => {
+const login = async (login) => {
   const res = await fetch(`${url}/login`, {
     method: 'POST',
     headers: {
@@ -43,7 +43,7 @@ const match = async (login) => {
   <div >  
     <div>
       <div class="mt-12 ml-16">
-        <match-password @login="match"/>
+        <match-password @login="login"/>
       </div>
     </div>
   </div>
