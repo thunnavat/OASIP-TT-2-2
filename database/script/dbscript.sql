@@ -69,5 +69,3 @@ INSERT INTO events (bookingName,bookingEmail,eventStartTime,eventDuration,eventC
 values ('Nattapon Chusriwan กลุ่ม US-5','nattapon_champ@gmail.com','2022-10-02 15:10:00',30,'2');
 INSERT INTO events (bookingName,bookingEmail,eventStartTime,eventDuration,eventCategoryId)
 values ('ไชยา ชูเจริญ กลุ่ม KP-5','chaitya_chu@gmail.com','2022-10-04 12:20:00',30,'1');
-INSERT INTO users (name,email,password,role)
-values ('admin','tt2@gmail.com','oasiptt2','admin' );
