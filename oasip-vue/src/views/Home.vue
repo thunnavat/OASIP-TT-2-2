@@ -157,9 +157,9 @@ console.log(unique);
 <template>
 <div>
   <div v-if="token === null" class="text-xl">
-    You do not have permission do you want to 
+    You have to 
     <router-link :to="{name:'Login'}" class="text-blue-700 font-semibold underline">Login</router-link>
-    or <router-link :to="{name:'AddUser'}" class="text-blue-700 font-semibold underline">Sign-up</router-link>
+    First
   </div>
   <div v-else>
   <div class="mt-4 flex justify-end">

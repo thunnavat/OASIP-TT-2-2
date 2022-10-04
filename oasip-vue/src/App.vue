@@ -1,7 +1,10 @@
 <script setup>
 import router from './router';
-const token = localStorage.getItem('token')
+import { onBeforeMount , ref } from 'vue';
+import jwt_decode from "jwt-decode";
 
+const token = localStorage.getItem('token')
+const url = import.meta.env.PROD ?  import.meta.env.VITE_API_URL : '/api';
 const logout = () => { 
   localStorage.clear();
   router.replace({name: 'Login'})
@@ -11,36 +14,40 @@ const logout = () => {
  }
  //  Testing area
 // ต้องใช้ npm install jwt-decode นะ
-
-// import jwt_decode from "jwt-decode";
-//const decode = jwt_decode(token) 
+const decode = token !== null ? jwt_decode(token) : ""
+let refreshtoken = ref('') 
 
 // เปรียบวันหมดอายุกับปัจจุบัน
+const refresh = async () => {
+  console.log('this is refresh function')
+  const res = await fetch(`${url}/refresh`, {
+    method: 'GET',
+    headers: {
+      'Authorization': token,
+      'isRefreshToken': 'true'
+    }
+  })
+  if (res.status === 200) {
+    console.log('succeed')
+    refreshtoken.value = await res.json()
+    localStorage.setItem('refreshtoken', 'Bearer ' + refreshtoken.value.token)
+  }
+  else {
+    console.log('cannot get token')
+  }
+}
+  const checkexpired = () => {
+    if(Date.now() >= decode.exp * 1000){
+    refresh()
+    }
+  else{
+    console.log('didnot')
+  }
+}
+onBeforeMount(() => {
+  checkexpired()
+})
 
-// const checkexpired = () => {
-//   if(Date.now() >= decode.exp * 1000){
-//     localStorage.clear()
-//     router.go(0)
-//   }
-//   else {
-//   }
-// }
-
-// const refresh = async () => {
-  // const res = await fetch(`${url}/refresh`, {
-  //   method: 'POST',
-  //   headers: {
-  //     'content-type': 'application/json'
-  //   },
-  //   body: JSON.stringify({token:token})
-  // })
-  // if (res.status === 200) {
-  //   token.value = await res.json()
-  //   localStorage.setItem('token', 'Bearer ' + token.value.token)
-
-
-// 
-// 
 </script>
  
 <template>

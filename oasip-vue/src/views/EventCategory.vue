@@ -7,13 +7,14 @@ const url = import.meta.env.PROD ?  import.meta.env.VITE_API_URL : '/api';
 const eventCategories = ref([])
 const editMode = ref(false)
 const token = localStorage.getItem('token')
+const refreshtoken = localStorage.getItem('refreshtoken')
 
 
 const getEventCategories = async () => {
   const res = await fetch(`${url}/eventCategories` , {
     method: 'GET',
     headers: {
-      'Authorization': token
+      'Authorization': refreshtoken !== null ? refreshtoken : token
     }
   }) 
   if (res.status === 200) {
@@ -70,9 +71,9 @@ const cancelform = () => {
 <template>
 <div>
   <div v-if="token === null" class="text-xl">
-    You do not have permission do you want to 
+    You have to
     <router-link :to="{name:'Login'}" class="text-blue-700 font-semibold underline">Login</router-link>
-    or <router-link :to="{name:'AddUser'}" class="text-blue-700 font-semibold underline">Sign-up</router-link>
+    First
   </div>
   <div v-else>
     <div>
