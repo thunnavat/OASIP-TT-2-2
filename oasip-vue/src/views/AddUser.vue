@@ -29,7 +29,7 @@ const createNewUser = async (newUser) => {
 </script>
  
 <template>
-  <div>
+  <!-- <div>
     <div v-if="token === null" class="text-xl">
     You have to 
     <router-link :to="{name:'Login'}" class="text-blue-700 font-semibold underline">Login</router-link>
@@ -38,6 +38,9 @@ const createNewUser = async (newUser) => {
     <div v-else>
       <add-user-form @addUser = "createNewUser" />
     </div>
+  </div> -->
+  <div>
+    <add-user-form @addUser = "createNewUser" />
   </div>
 </template>
  
