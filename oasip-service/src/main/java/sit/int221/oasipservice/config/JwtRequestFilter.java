@@ -1,4 +1,4 @@
-package sit.int221.oasipservice.config;
+2package sit.int221.oasipservice.config;
 
 import java.io.IOException;
 
