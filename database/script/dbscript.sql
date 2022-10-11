@@ -32,7 +32,7 @@ CREATE TABLE users (
   name VARCHAR(100) NOT NULL,
   email VARCHAR(50) NOT NULL,
   password VARCHAR(100) NOT NULL,
-  role ENUM('admin', 'lecturer', 'student') NOT NULL DEFAULT 'student',
+  role ENUM('ADMIN', 'LECTURER', 'STUDENT') NOT NULL DEFAULT 'STUDENT',
   createdOn TIMESTAMP NOT NULL DEFAULT current_timestamp,
   updatedOn TIMESTAMP NOT NULL DEFAULT current_timestamp on update current_timestamp,
   PRIMARY KEY (userId),
@@ -70,7 +70,7 @@ values ('Nattapon Chusriwan กลุ่ม US-5','nattapon_champ@gmail.com','20
 INSERT INTO events (bookingName,bookingEmail,eventStartTime,eventDuration,eventCategoryId)
 values ('ไชยา ชูเจริญ กลุ่ม KP-5','chaitya_chu@gmail.com','2022-10-04 12:20:00',30,'1');
 
-INSERT INTO users (name,email,password)
-values ('thunnavat','thunnavatadmin@gmail.com','$argon2id$v=19$m=4096,t=3,p=1$SORiYb6dy7rL7mxYQDzm+Q$tmVvQTPMNJDTAt7DvfG4ZVggFLEJvTTWjgN14e8IjUw');
-INSERT INTO users (name,email,password)
-values ('thunnavatstu','thunnavatstudent@gmail.com','$argon2id$v=19$m=4096,t=3,p=1$KRi8+l82yICiLupDPB/9dg$QDKiYR3VjVZu78gUWOkFlSLadYeEWPhyNBxpD+MMHN4');
+INSERT INTO users (name,email,password,role)
+values ('thunnavat','thunnavatadmin@gmail.com','$argon2id$v=19$m=4096,t=3,p=1$SORiYb6dy7rL7mxYQDzm+Q$tmVvQTPMNJDTAt7DvfG4ZVggFLEJvTTWjgN14e8IjUw','ADMIN');
+INSERT INTO users (name,email,password,role)
+values ('thunnavatstu','thunnavatstudent@gmail.com','$argon2id$v=19$m=4096,t=3,p=1$KRi8+l82yICiLupDPB/9dg$QDKiYR3VjVZu78gUWOkFlSLadYeEWPhyNBxpD+MMHN4','STUDENT');
