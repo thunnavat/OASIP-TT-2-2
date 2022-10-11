@@ -1,6 +1,7 @@
 package sit.int221.oasipservice.controllers;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import sit.int221.oasipservice.dtos.CreateUserDTO;
 import sit.int221.oasipservice.dtos.UpdateUserDTO;
@@ -20,7 +21,11 @@ public class UserController {
     }
 
     @GetMapping("")
-    public List<User> getUsers() {return service.getUsers();}
+    public List<User> getUsers(Authentication auth) {
+        System.out.println(auth.getName());
+        auth.getAuthorities().forEach(System.out::println);
+        return service.getUsers();
+    }
 
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)

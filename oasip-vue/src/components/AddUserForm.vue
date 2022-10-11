@@ -60,7 +60,7 @@ const checkEmail = () => {
       showEmailError.value = true
     }
 }
-const roles = ["admin" , "lecturer" , "student"]
+const roles = ["ADMIN" , "LECTURER" , "STUDENT"]
 
 
 </script>

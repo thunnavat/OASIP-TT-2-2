@@ -29,7 +29,7 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
-    private Role role = Role.student;
+    private Role role = Role.STUDENT;
 
     @Column(name = "createdOn", nullable = false)
     @Generated(GenerationTime.INSERT)

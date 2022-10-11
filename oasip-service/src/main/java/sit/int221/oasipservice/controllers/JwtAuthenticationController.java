@@ -1,7 +1,6 @@
 package sit.int221.oasipservice.controllers;
 
 import io.jsonwebtoken.impl.DefaultClaims;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -10,39 +9,37 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.server.ResponseStatusException;
 import sit.int221.oasipservice.config.JwtTokenUtil;
 import sit.int221.oasipservice.dtos.JwtRequest;
 import sit.int221.oasipservice.dtos.JwtResponse;
 import sit.int221.oasipservice.services.JwtUserDetailsService;
+import sit.int221.oasipservice.services.UserService;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@CrossOrigin
+@RequestMapping("/api")
 public class JwtAuthenticationController {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenUtil jwtTokenUtil;
     private final JwtUserDetailsService userDetailsService;
-
-    public JwtAuthenticationController(AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil, JwtUserDetailsService userDetailsService) {
+    private final UserService userService;
+    public JwtAuthenticationController(AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil, JwtUserDetailsService userDetailsService, UserService userService) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenUtil = jwtTokenUtil;
         this.userDetailsService = userDetailsService;
+        this.userService = userService;
     }
 
-    @RequestMapping(value = "/api/login", method = RequestMethod.POST)
+    @PostMapping(value = "/login")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
 
         authenticate(authenticationRequest.getEmail(), authenticationRequest.getPassword());
 
-        final UserDetails userDetails = userDetailsService
-                .loadUserByUsername(authenticationRequest.getEmail());
-
-        final String token = jwtTokenUtil.generateToken(userDetails);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getEmail());
+        String token = jwtTokenUtil.generateToken(userDetails);
 
         return ResponseEntity.ok(new JwtResponse(token));
     }
@@ -57,17 +54,13 @@ public class JwtAuthenticationController {
         }
     }
 
-    @RequestMapping(value = "/api/refresh", method = RequestMethod.GET)
+    @GetMapping(value = "/api/refresh")
     public ResponseEntity<?> refreshtoken(HttpServletRequest request) throws Exception {
         // From the HttpRequest get the claims
         DefaultClaims claims = (io.jsonwebtoken.impl.DefaultClaims) request.getAttribute("claims");
-        if(claims == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "token has expired");
-        } else {
-            Map<String, Object> expectedMap = getMapFromIoJsonwebtokenClaims(claims);
-            String token = jwtTokenUtil.doGenerateRefreshToken(expectedMap, expectedMap.get("sub").toString());
-            return ResponseEntity.ok(new JwtResponse(token));
-        }
+        Map<String, Object> expectedMap = getMapFromIoJsonwebtokenClaims(claims);
+        String token = jwtTokenUtil.doGenerateRefreshToken(expectedMap, expectedMap.get("sub").toString());
+        return ResponseEntity.ok(new JwtResponse(token));
     }
 
     public Map<String, Object> getMapFromIoJsonwebtokenClaims(DefaultClaims claims) {
@@ -77,24 +70,9 @@ public class JwtAuthenticationController {
         }
         return expectedMap;
     }
+
+    @PostMapping(value = "/api/match")
+    public void match(@RequestBody JwtRequest login) { userService.match(login); }
 }
 
-//import org.springframework.web.bind.annotation.PostMapping;
-//import org.springframework.web.bind.annotation.RequestBody;
-//import org.springframework.web.bind.annotation.RequestMapping;
-//import org.springframework.web.bind.annotation.RestController;
-//import sit.int221.oasipservice.dtos.MatchDTO;
-//import sit.int221.oasipservice.services.UserService;
-//
-//@RestController
-//@RequestMapping("/api")
-//public class JwtAuthenticationController {
-//    private final UserService service;
-//
-//    public JwtAuthenticationController(UserService service) {
-//        this.service = service;
-//    }
-//
-//    @PostMapping("/match")
-//    public void match(@RequestBody MatchDTO login) { service.match(login); }
-//}
+
