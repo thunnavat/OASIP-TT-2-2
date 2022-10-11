@@ -1,4 +1,4 @@
-2package sit.int221.oasipservice.config;
+package sit.int221.oasipservice.config;
 
 import java.io.IOException;
 
@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import sit.int221.oasipservice.config.JwtTokenUtil;
 import sit.int221.oasipservice.services.JwtUserDetailsService;
 
 @Component
