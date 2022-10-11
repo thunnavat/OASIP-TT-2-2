@@ -69,3 +69,8 @@ INSERT INTO events (bookingName,bookingEmail,eventStartTime,eventDuration,eventC
 values ('Nattapon Chusriwan กลุ่ม US-5','nattapon_champ@gmail.com','2022-10-02 15:10:00',30,'2');
 INSERT INTO events (bookingName,bookingEmail,eventStartTime,eventDuration,eventCategoryId)
 values ('ไชยา ชูเจริญ กลุ่ม KP-5','chaitya_chu@gmail.com','2022-10-04 12:20:00',30,'1');
+
+INSERT INTO users (name,email,password)
+values ('thunnavat','thunnavatadmin@gmail.com','$argon2id$v=19$m=4096,t=3,p=1$SORiYb6dy7rL7mxYQDzm+Q$tmVvQTPMNJDTAt7DvfG4ZVggFLEJvTTWjgN14e8IjUw');
+INSERT INTO users (name,email,password)
+values ('thunnavatstu','thunnavatstudent@gmail.com','$argon2id$v=19$m=4096,t=3,p=1$KRi8+l82yICiLupDPB/9dg$QDKiYR3VjVZu78gUWOkFlSLadYeEWPhyNBxpD+MMHN4');

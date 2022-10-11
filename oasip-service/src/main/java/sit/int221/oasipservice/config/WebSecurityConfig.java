@@ -52,7 +52,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.csrf().disable()
                 // dont authenticate this particular request
                 .authorizeRequests()
-                .antMatchers("/api/users/**").hasAuthority("ADMIN")
+//                .antMatchers("/api/users/**").hasAuthority("ADMIN")
                 .antMatchers("/api/match").hasAuthority("ADMIN")
                 .antMatchers("/api/login").permitAll()
                 .antMatchers("/api/refresh").permitAll()
