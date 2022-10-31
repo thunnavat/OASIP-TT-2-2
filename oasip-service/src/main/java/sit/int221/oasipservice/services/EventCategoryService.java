@@ -1,5 +1,6 @@
 package sit.int221.oasipservice.services;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -20,7 +21,7 @@ public class EventCategoryService {
     }
 
     public List<EventCategory> getEventCategories() {
-        return repository.findAll();
+        return repository.findAll(Sort.by("eventCategoryName"));
     }
 
     public EventCategory update(UpdateEventCategoryDTO updateEventCategory, Integer eventCategoryId) {

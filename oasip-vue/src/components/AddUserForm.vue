@@ -28,7 +28,7 @@ const newUser = ref({
     name: '',
     email: '',
     password: '',
-    role: 'student'
+    role: 'STUDENT'
   })
 
 

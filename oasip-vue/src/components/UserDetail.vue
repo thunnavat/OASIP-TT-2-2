@@ -20,8 +20,8 @@ defineProps({
           <p class="font-medium">NAME: {{ user.name }}</p>  
           <p class="font-medium">EMAIL: {{ user.email }}</p>
           <p class="font-medium">ROLE: {{ user.role }}</p>
-          <p class="font-medium">CREATED ON: {{ user.createdOn }}</p>
-          <p class="font-medium">UPDATED ON: {{ user.updatedOn }}</p>
+          <p class="font-medium">CREATED ON: {{ dayjs(user.createdOn).format('DD MMMM YYYY HH.mm')  }}</p>
+          <p class="font-medium">UPDATED ON: {{ dayjs(user.updatedOn).format('DD MMMM YYYY HH.mm')  }}</p>
           </div>
               <div class=" text-black flex justify-end">
                   <button class=" ml-3 mb-4  border border-solid bg-white  border-yellow-800 hover:bg-yellow-800 hover:text-black font-bold uppercase text-sm py-3 rounded outline-none focus:outline-none ease-linear transition-all duration-150 active show px-3"

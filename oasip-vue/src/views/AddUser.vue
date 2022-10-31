@@ -1,7 +1,7 @@
 <script setup>
-import { ref, onBeforeMount } from 'vue';
+import { ref } from 'vue';
 import AddUserForm from '../components/AddUserForm.vue'
-const url = import.meta.env.PROD ?  import.meta.env.VITE_API_URL : '/api';
+import {users as usersObj} from '../untils/untils.js'
 
 const token = localStorage.getItem('token')
 const newestUser = ref({})
@@ -10,26 +10,14 @@ const cancelform = () => {
 }
 
 const createNewUser = async (newUser) => {
-  const res = await fetch(`${url}/users`, {
-    method: 'POST',
-    headers: {
-      'content-type': 'application/json'
-    },
-    body: JSON.stringify({name : newUser.name , email : newUser.email , role : newUser.role , password : newUser.password  })
-  })
-  if (res.status === 201) {
-    alert('Added successfully')
-  } else if (res.status === 400) {
-    const errorMessage = await res.json()
-    alert(errorMessage.message)
-  } else console.log('error, cannot be added')
+  await usersObj.createUser(newUser)
   cancelform()
 }
 
 </script>
  
 <template>
-  <!-- <div>
+  <div>
     <div v-if="token === null" class="text-xl">
     You have to 
     <router-link :to="{name:'Login'}" class="text-blue-700 font-semibold underline">Login</router-link>
@@ -38,9 +26,6 @@ const createNewUser = async (newUser) => {
     <div v-else>
       <add-user-form @addUser = "createNewUser" />
     </div>
-  </div> -->
-  <div>
-    <add-user-form @addUser = "createNewUser" />
   </div>
 </template>
  

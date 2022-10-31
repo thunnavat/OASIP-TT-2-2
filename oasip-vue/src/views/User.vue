@@ -3,26 +3,18 @@ import { ref , onBeforeMount} from 'vue'
 import UserList from '../components/UserList.vue'
 import UserDetail from '../components/UserDetail.vue'
 import EditUser from '../components/EditUser.vue'
+import {users as usersObj} from '../untils/untils.js'
 
-const url = import.meta.env.PROD ?  import.meta.env.VITE_API_URL : '/api';
 const users = ref([])
 const emptyMsg = 'No Users'
 const user = ref([])
 const token = localStorage.getItem('token')
-const refreshtoken = localStorage.getItem('refreshtoken')
-const getUsers = async () => {
-  const res = await fetch(`${url}/users`, {
-    method: 'GET',
-    headers: {
-      'Authorization': token
-    }
-  })
-  if(res.status === 200) {
-    users.value = await res.json()
-  }
-  else if(res.status === 401){
+const currentUser = ref({})
+const newestUser = ref({})
+const editMode = ref(false)
 
-  } else console.log('cannot get users')
+const getUsers = async () => {
+  users.value = await usersObj.getUsers()
 }
 
 onBeforeMount( async () => {
@@ -30,54 +22,20 @@ onBeforeMount( async () => {
   user.value = users.value
 })
 
-const currentUser = ref({})
-const getUserDetail = (u) => {
-    currentUser.value = u
+const getUserDetail = (user) => {
+    currentUser.value = user
     isModal.value = true
 }
 
-const newestUser = ref({})
-
-const editMode = ref(false)
 const toEditMode = (currentUser) => {
   newestUser.value = currentUser
   editMode.value = true
 }
 
-const removeUser = async (deleteUserId) => {
-  if (confirm(`Do you want to delete user-id: ${deleteUserId} `) === true) {
-    const res = await fetch(`${url}/users/${deleteUserId}` , {
-      method:'DELETE'
-  })
-  if(res.status === 200 ){
-      users.value = users.value.filter((user) => user.id !== deleteUserId)
-    } else console.log('Error , cannot delete user')
-  } else {
-    console.log('cancel')
-  }
-}
-const isModal = ref(false)
-const closeModal = (e) => {
-  isModal.value = e
-}
-
 const updateUser = async (updateUser) =>{
   const isUnique = checkUnique(updateUser.name, updateUser.email)
   if(isUnique) {
-    const res = await fetch(`${url}/users/${updateUser.id}`, {
-      method: 'PUT',
-      headers: {
-        'content-type': 'application/json'
-      },
-      body: JSON.stringify({
-        name: updateUser.name, email: updateUser.email, role: updateUser.role
-      })
-    })
-    if (res.status === 200) {
-      const editedUser = await res.json()
-      users.value = users.value.map((user) => user.id === editedUser.id ? {...user, name: editedUser.name, email: editedUser.email, role: editedUser.role} : user) 
-      alert('Updated successfully')  
-    } else console.log('Cannot update')
+    users.value = await usersObj.updateUser(updateUser)
     cancelform()
   }
 }
@@ -101,6 +59,15 @@ const checkUnique = ((name, email) => {
   }
 })
 
+const removeUser = async (userId) => {
+  users.value = await usersObj.deleteUser(userId)
+}
+
+const isModal = ref(false)
+const closeModal = (e) => {
+  isModal.value = e
+}
+
 </script>
  
 <template>
@@ -116,7 +83,6 @@ const checkUnique = ((name, email) => {
       </div>
       <div v-else>
         <div v-if="editMode === true">
-          
           <edit-user :user="newestUser"  @updateUser="updateUser" @cancelform="cancelform"/>
         </div>
         <!-- <span>{{ users }}</span> -->
@@ -125,9 +91,7 @@ const checkUnique = ((name, email) => {
       </div>
       <div v-if="isModal">
         <user-detail :user="currentUser" @close="closeModal" />
-      </div>
-      <!--  -->
-    </div>
+      </div>      </div>
     
   </div>
   </template>

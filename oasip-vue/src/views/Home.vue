@@ -4,103 +4,52 @@ import EventList from '../components/EventList.vue'
 import ShowDetail from '../components/ShowDetail.vue'
 import dayjs from 'dayjs'
 import AddEditEvent from '../components/AddEditEvent.vue'
+import {events as eventsObj, eventCategories as eventCategoriesObj} from '../untils/untils.js'
 
-const url = import.meta.env.PROD ?  import.meta.env.VITE_API_URL : '/api';
-const eventViews = ['ALL', 'DAY', 'CATEGORY', 'UPCOMING', 'PAST']
 const events = ref([])
-const event = ref([])
 const eventCategories = ref([])
-const isModal = ref(false)
+const eventViews = ['ALL', 'DAY', 'CATEGORY', 'UPCOMING', 'PAST']
+const selectedView = ref('ALL')
+const selectedDate = ref(dayjs().format('YYYY-MM-DD'))
+const selectedCategory = ref(1)
+const emptyMsg = ref('EMPTY')
 const clickForBooking = ref(false)
+const newestEvent = ref({})
 const token = localStorage.getItem('token')
-console.log(url);
-const getEvents = async () => {
-  const res = await fetch(`${url}/events` ,{
-    method: 'GET',
-    headers: {
-      'Authorization': token
-    }
-  })
-  
-  if (res.status === 200) {
-    events.value = await res.json()
-    console.log('Get data')
-  } else console.log('Error, cannot get data')
-}
-const getEventCategories = async () => {
-  const res = await fetch(`${url}/eventCategories`)
-  if (res.status === 200) {
-    eventCategories.value = await res.json()
-    console.log('Get event Category')
-  } else console.log('Error, cannot get event Category')
-}
+const isModal = ref(false)
+const currentEvent = ref({})
+
 onBeforeMount(async () => {
-  await getEvents()
-  await getEventCategories()
-  sortingEvent(events)
-  event.value = events.value
+  events.value = await eventsObj.getEvents()
+  eventCategories.value = await eventCategoriesObj.getEventCategories()
 })
-const removeEvent = async (deleteEventId) => {
-  if (confirm(`Do you want to delete event-id: ${deleteEventId} `) === true) {
-    const res = await fetch(`${url}/events/${deleteEventId}` , {
-      method:'DELETE'
-    })
-    if(res.status === 200 ){
-      events.value = events.value.filter((event) => event.id !== deleteEventId)
-    } else console.log('Error , cannot delete event')
-  } else {
-    console.log('cancel')
-  }
+
+const cancelform = () => {
+  newestEvent.value = {}
+  clickForBooking.value = false
 }
 
-const newestEvent = ref({})
 const createNewEvent = async (newEvent) => {
-  const res = await fetch(`${url}/events`, {
-    method: 'POST',
-    headers: {
-      'content-type': 'application/json'
-    },
-    body: JSON.stringify({ bookingName : newEvent.bookingName , eventCategoryId: newEvent.eventCategoryId , eventStartTime: newEvent.eventStartTime ,
-    bookingEmail: newEvent.bookingEmail, eventNotes: newEvent.eventNotes })
-  })
-  if (res.status === 201) {
-    const addedEvent = await res.json()
-    events.value.push(addedEvent)
-    sortingEvent(events)
-    alert('Added successfully')
-  } else console.log('error, cannot be added')
+  events.value = await eventsObj.createEvent(newEvent)
   cancelform()
 }
-const toEditMode = (currentEvent) => {
-  newestEvent.value = currentEvent
-  newestEvent.value.eventStartTime = dayjs(currentEvent.eventStartTime).format('YYYY-MM-DDTHH:mm')
-  newestEvent.value.eventCategoryId = currentEvent.eventCategory.id
+
+const toEditMode = (editEvent) => {
+  newestEvent.value = editEvent
+  newestEvent.value.eventStartTime = dayjs(editEvent.eventStartTime).format('YYYY-MM-DDTHH:mm')
+  newestEvent.value.eventCategoryId = editEvent.eventCategory.id
   clickForBooking.value = true
 }
 
 const updateEvent = async (updateEvent) => {
-  const res = await fetch(`${url}/events/${updateEvent.id}`, {
-    method: 'PUT',
-    headers: {
-      'content-type': 'application/json'
-    },
-    body: JSON.stringify({
-      eventStartTime: updateEvent.eventStartTime, eventNotes: updateEvent.eventNotes
-    })
-  })
-  if (res.status === 200) {
-    const editedEvent = await res.json()
-    events.value = events.value.map((event) => event.id === editedEvent.id ? {...event, eventStartTime: editedEvent.eventStartTime, eventNotes: editedEvent.eventNotes} : event) 
-    alert('Updated successfully')  
-  } else console.log('Cannot update')
+  await eventsObj.updateEvent(updateEvent)
   cancelform()
 }
 
-const sortingEvent = (events) => events.value.sort((a, b) => { 
-  return dayjs(b.eventStartTime) - dayjs(a.eventStartTime)
-  })
+const deleteEvent = async (eventId) => {
+  await eventsObj.deleteEvent(eventId)
+}
 
-const currentEvent = ref({})
 const getDetail = (event) => {
     currentEvent.value = event
     isModal.value = true
@@ -110,42 +59,25 @@ const closeModal = (e) => {
   isModal.value = e
 }
 
-const cancelform = () => {
-  newestEvent.value = {}
-  clickForBooking.value = false
-}
-
-const selectedType = ref('ALL')
-const selectedDate = ref(dayjs().format('YYYY-MM-DD'))
-const selectedCategory = ref('Project Management Clinic')
-const emptyMsg = ref('EMPTY')
-const ascEvent = (events) => events.value.sort((a, b) => { 
-    return dayjs(a.eventStartTime) - dayjs(b.eventStartTime)
- })
-const change = () => {
-events.value = event.value
-  if(selectedType.value === 'ALL'){
-    sortingEvent(events)
+const change = async () => {
+  if(selectedView.value === 'ALL'){
+    events.value = await eventsObj.getEvents()
     emptyMsg.value = 'EMPTY'
   }
-  else if(selectedType.value === 'CATEGORY'){
-    events.value = events.value.filter((event) => event.eventCategory.eventCategoryName === selectedCategory.value)
-    sortingEvent(events)
+  else if(selectedView.value === 'CATEGORY'){
+    events.value = await eventsObj.getEventsByCategory(selectedCategory.value)
     emptyMsg.value = 'No Scheduled Events'
   }
-  else if(selectedType.value === 'UPCOMING'){
-    events.value = events.value.filter((event) => dayjs(event.eventStartTime) >= dayjs())
-    ascEvent(events)
+  else if(selectedView.value === 'UPCOMING'){
+    events.value = await eventsObj.getEventsByUpcomingTime(dayjs().utc().format())
     emptyMsg.value = 'No On-Going or Upcoming Events'
   }
-  else if(selectedType.value === 'PAST'){
-    events.value = events.value.filter((event) => dayjs(event.eventStartTime) < dayjs())
-    sortingEvent(events)
+  else if(selectedView.value === 'PAST'){
+    events.value = await eventsObj.getEventsByPastTime(dayjs().utc().format())
     emptyMsg.value = 'No Past Events'
   }
-  else if(selectedType.value === 'DAY'){
-    events.value = events.value.filter((event) => dayjs(event.eventStartTime).format('YYYY-MM-DD') === selectedDate.value)
-    ascEvent(events)
+  else if(selectedView.value === 'DAY'){
+    events.value = await eventsObj.getEventsByDay(dayjs(selectedDate.value).startOf('day').utc().format())
     emptyMsg.value = 'No Scheduled Events'
   }
 }
@@ -165,14 +97,14 @@ console.log(unique);
   <div class="mt-4 flex justify-end">
     <button @click="clickForBooking = !clickForBooking" class="text-white bg-black mr-4 border border-solid hover:bg-[#855B52]  active:bg-cyan-600 font-bold uppercase text-sm py-3 rounded outline-none focus:outline-none ease-linear transition-all duration-150 active show px-3"> BOOKING </button>
     <!-- Select Bar -->
-    <select id="select-bar" class="select ml-4 mb-6 mt-3 mr-4  text-black bg-blue-300 rounded font-bold" v-model="selectedType" :onchange="change">
+    <select id="select-bar" class="select ml-4 mb-6 mt-3 mr-4  text-black bg-blue-300 rounded font-bold" v-model="selectedView" :onchange="change">
       <option v-for="(eventView, index) in eventViews" :key="index" class="font-bold">{{ eventView }}</option> 
     </select>
     <!-- User Select Specific day or category -->
     <div class="absolute top-10 right-5">
-      <input type="date" v-show="selectedType === 'DAY'" v-model="selectedDate" :onchange="change">
-      <select v-show="selectedType === 'CATEGORY'" id="select-bar" v-model="selectedCategory"  :onchange="change">
-       <option v-for="(eventCategory, index) in eventCategories" :key="index" class="font-bold">{{ eventCategory.eventCategoryName }}</option> 
+      <input type="date" v-show="selectedView === 'DAY'" v-model="selectedDate" :onchange="change">
+      <select v-show="selectedView === 'CATEGORY'" id="select-bar" v-model="selectedCategory"  :onchange="change">
+       <option v-for="eventCategory in eventCategories" :key="eventCategory.id" :value="eventCategory.id" class="font-bold">{{ eventCategory.eventCategoryName }}</option> 
      </select>
     </div>
   </div>
@@ -199,7 +131,7 @@ console.log(unique);
         <span>{{ emptyMsg }}</span>
       </div>
       <div v-else>
-        <event-list :events="events" @detail="getDetail" @deleteEvent="removeEvent" @editEvent="toEditMode"/>
+        <event-list :events="events" @detail="getDetail" @deleteEvent="deleteEvent" @editEvent="toEditMode"/>
       </div>
     </div>
   </div>

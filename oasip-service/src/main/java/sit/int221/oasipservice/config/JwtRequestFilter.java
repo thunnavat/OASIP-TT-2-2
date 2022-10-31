@@ -55,11 +55,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 System.out.println("Cannot set the Security Context");
             }
 
-//            if (jwtToken != null &&
-//                    (request.getRequestURL().toString().contains("/users") || request.getRequestURL().toString().contains("/match")) &&
-//                    !jwtTokenUtil.getRoleFromToken(jwtToken).equals("ROLE_ADMIN")) {
-//                request.setAttribute("isAdmin", false);
-//            }
         } catch (ExpiredJwtException ex) {
             String isRefreshToken = request.getHeader("isRefreshToken");
             // allow for Refresh Token creation if following conditions are true.
