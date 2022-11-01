@@ -30,7 +30,8 @@ const cancelform = () => {
 }
 
 const createNewEvent = async (newEvent) => {
-  events.value = await eventsObj.createEvent(newEvent)
+  await eventsObj.createEvent(newEvent)
+  events.value = await eventsObj.getEvents()
   cancelform()
 }
 
@@ -43,11 +44,13 @@ const toEditMode = (editEvent) => {
 
 const updateEvent = async (updateEvent) => {
   await eventsObj.updateEvent(updateEvent)
+  events.value = await eventsObj.getEvents()
   cancelform()
 }
 
 const deleteEvent = async (eventId) => {
   await eventsObj.deleteEvent(eventId)
+  events.value = await eventsObj.getEvents()
 }
 
 const getDetail = (event) => {

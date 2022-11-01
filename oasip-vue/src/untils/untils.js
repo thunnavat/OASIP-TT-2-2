@@ -88,7 +88,7 @@ export const events = {
         bookingEmail: newEvent.bookingEmail, eventNotes: newEvent.eventNotes})
     })
     if (res.status === 201) {
-      this.getEvents()
+      alert('Added Successfully')
     } else console.log('Error, cannot create new event')
   },
 
@@ -102,7 +102,7 @@ export const events = {
       body: JSON.stringify({eventStartTime: updateEvent.eventStartTime, eventNotes: updateEvent.eventNotes})
     })
     if (res.status === 200) {
-      this.getEvents()
+      alert('Updated Successfully')
     } else console.log('Error, cannot update event')
   },
 
@@ -115,7 +115,7 @@ export const events = {
         }
       })
       if (res.status === 200) {
-        this.getEvents()
+        
       } else console.log('Error, cannot delete event')
     } else console.log(`Cancel to delete event-id: ${eventId}`)
   }
@@ -145,7 +145,7 @@ export const eventCategories = {
         eventCategoryDescription: updateEventCategory.eventCategoryDescription, eventDuration: updateEventCategory.eventDuration})
     })
     if (res.status === 200) {
-      this.getEventCategories()
+      alert('Updated Successfully')
     } else console.log('Error, cannot update event category')
   }
 }
@@ -173,7 +173,6 @@ export const users = {
       body: JSON.stringify({name: newUser.name, email: newUser.email, role: newUser.role, password: newUser.password})
     })
     if (res.status === 201) {
-      this.getUsers()
       alert('Added successfully')
     } else if (res.status === 400) {
       const errorMessage = await res.json()
@@ -191,7 +190,6 @@ export const users = {
       body: JSON.stringify({name: updateUser.name, email: updateUser.email, role: updateUser.role})
     })
     if(res.status === 200) {
-      this.getUsers()
       alert('Updated successfully')
     } else console.log('Error, cannot update user')
   },
@@ -205,7 +203,7 @@ export const users = {
         }
       })
       if (res.status === 200) {
-        this.getUsers()
+
       } else console.log('Error, cannot delete user')
     } else console.log(`Cancel to delete user-id: ${userId}`)
   }

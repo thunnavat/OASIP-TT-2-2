@@ -7,7 +7,6 @@ import {users as usersObj} from '../untils/untils.js'
 
 const users = ref([])
 const emptyMsg = 'No Users'
-const user = ref([])
 const token = localStorage.getItem('token')
 const currentUser = ref({})
 const newestUser = ref({})
@@ -19,7 +18,6 @@ const getUsers = async () => {
 
 onBeforeMount( async () => {
   await getUsers()
-  user.value = users.value
 })
 
 const getUserDetail = (user) => {
@@ -35,7 +33,8 @@ const toEditMode = (currentUser) => {
 const updateUser = async (updateUser) =>{
   const isUnique = checkUnique(updateUser.name, updateUser.email)
   if(isUnique) {
-    users.value = await usersObj.updateUser(updateUser)
+    await usersObj.updateUser(updateUser)
+    users.value = await usersObj.getUsers()
     cancelform()
   }
 }

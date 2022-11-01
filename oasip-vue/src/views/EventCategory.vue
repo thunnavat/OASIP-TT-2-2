@@ -26,6 +26,7 @@ const toEditMode = (editEventCategory) => {
 
 const updateEventCategory = async (updateEventCategory) => {
   await eventCategoriesObj.updateEventCategory(updateEventCategory)
+  eventCategories.value = await eventCategoriesObj.getEventCategories()
   cancelform()
 }
 
