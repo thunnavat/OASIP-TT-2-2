@@ -59,7 +59,8 @@ const checkUnique = ((name, email) => {
 })
 
 const removeUser = async (userId) => {
-  users.value = await usersObj.deleteUser(userId)
+  await usersObj.deleteUser(userId)
+  users.value = await usersObj.getUsers()
 }
 
 const isModal = ref(false)
