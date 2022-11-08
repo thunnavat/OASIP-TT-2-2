@@ -36,15 +36,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         // configure AuthenticationManager so that it knows from where to load
         // user for matching credentials
-        // Use BCryptPasswordEncoder
-//        auth.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder());
+        // Use Argon2PasswordEncoder
         auth.userDetailsService(jwtUserDetailsService).passwordEncoder(argon2PasswordEncoder);
     }
-
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
 
     @Bean
     @Override
@@ -58,17 +52,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.csrf().disable()
                 // dont authenticate this particular request
                 .authorizeRequests()
+                .antMatchers("/api/users/**").hasAuthority("ADMIN")
+                .antMatchers("/api/match").hasAuthority("ADMIN")
                 .antMatchers("/api/login").permitAll()
                 .antMatchers("/api/refresh").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/users").permitAll()
                 // all other requests need to be authenticated
                 .anyRequest().authenticated().and().
                 // make sure we use stateless session; session won't be used to
                 // store user's state.
                         exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                // Add a filter to validate the tokens with every request
+                .and().addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
-        // Add a filter to validate the tokens with every request
-        httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }

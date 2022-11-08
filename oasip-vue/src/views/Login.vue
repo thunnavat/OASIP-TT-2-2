@@ -23,7 +23,7 @@ const login = async (login) => {
   })
   if (res.status === 200) {
     token.value = await res.json()
-    localStorage.setItem('token', 'Bearer ' + token.value.token)
+    localStorage.setItem('token', 'Bearer ' + token.value.jwttoken)
     alert('Login Successful')
     router.replace({name: 'Home'})
     setTimeout(() => {

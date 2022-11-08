@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.web.server.ResponseStatusException;
 import sit.int221.oasipservice.dtos.CreateUserDTO;
+import sit.int221.oasipservice.dtos.JwtRequest;
 import sit.int221.oasipservice.dtos.UpdateUserDTO;
 import sit.int221.oasipservice.entities.User;
 import sit.int221.oasipservice.repositories.UserRepository;
@@ -69,11 +70,11 @@ public class UserService {
         return userRepository.saveAndFlush(user);
     }
 
-//    public void match(JwtRequest login) {
-//        User userByUsername = userRepository.findByEmailIgnoreCase(login.getUsername().trim());
-//        if (userByUsername == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-//        Boolean matchStatus = encoder.matches(login.getPassword(), userByUsername.getPassword());
-//        if (matchStatus == false) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-//    }
+    public void match(JwtRequest login) {
+        User userByUsername = userRepository.findByEmailIgnoreCase(login.getEmail().trim());
+        if (userByUsername == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        Boolean matchStatus = encoder.matches(login.getPassword(), userByUsername.getPassword());
+        if (matchStatus == false) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+    }
 
 }
