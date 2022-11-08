@@ -1,6 +1,5 @@
 package sit.int221.oasipservice.controllers;
 
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import sit.int221.oasipservice.dtos.CreateEventDTO;
@@ -8,6 +7,7 @@ import sit.int221.oasipservice.dtos.UpdateEventDTO;
 import sit.int221.oasipservice.entities.Event;
 import sit.int221.oasipservice.services.EventService;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.time.Instant;
 import java.util.List;
@@ -22,32 +22,52 @@ public class EventController {
     }
 
     @GetMapping("")
-    public List<Event> getEvents() { return service.getEvents(); }
+    public List<Event> getEvents(HttpServletRequest request) { return service.getEvents(request); }
 
     @GetMapping("/{id}")
-    public Event getEventById(@PathVariable Integer id) {
-        return service.getEventById(id);
+    public Event getEventById(HttpServletRequest request, @PathVariable Integer id) {
+        return service.getEventById(request, id);
     }
 
-    @GetMapping("/{eventCategoryId}/{startDateMidNightTime}")
-    public List<Event> getEventsByCategoryDateAndDate(@PathVariable Integer eventCategoryId, @PathVariable Instant startDateMidNightTime) {
+    @GetMapping("/day")
+    public List<Event> getEventsByDay (HttpServletRequest request, @RequestParam Instant dateTimeMidnight) {
+        return service.getEventsByDay(request, dateTimeMidnight);
+    }
+
+    @GetMapping("category/{categoryId}")
+    public List<Event> getEventsByCategory (HttpServletRequest request, @PathVariable Integer categoryId) {
+        return service.getEventsByCategory(request, categoryId);
+    }
+
+    @GetMapping("/upcoming")
+    public List<Event> getEventsByUpcomingTime (HttpServletRequest request, @RequestParam Instant eventStartTime) {
+        return service.getEventsByUpcomingTime(request, eventStartTime);
+    }
+
+    @GetMapping("/past")
+    public List<Event> getEventsByPastTime (HttpServletRequest request, @RequestParam Instant eventStartTime) {
+        return service.getEventsByPastTime(request, eventStartTime);
+    }
+
+    @GetMapping("/categoryDate")
+    public List<Event> getEventsByCategoryAndDate(@RequestParam Integer eventCategoryId, @RequestParam Instant startDateMidNightTime) {
         return service.getEventsByCategoryAndDate(eventCategoryId, startDateMidNightTime);
     }
 
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
-    public Event create(@Valid @RequestBody CreateEventDTO newEvent) {
-        return service.create(newEvent);
+    public Event create(HttpServletRequest request, @Valid @RequestBody CreateEventDTO newEvent) {
+        return service.create(request, newEvent);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Integer id) {
-        service.delete(id);
+    public void delete(HttpServletRequest request, @PathVariable Integer id) {
+        service.delete(request, id);
     }
 
     @PutMapping("/{id}")
-    public Event update(@Valid @RequestBody UpdateEventDTO updateEvent, @PathVariable Integer id) {
-        return service.update(updateEvent, id);
+    public Event update(HttpServletRequest request, @Valid @RequestBody UpdateEventDTO updateEvent, @PathVariable Integer id) {
+        return service.update(request, updateEvent, id);
     }
 
 }

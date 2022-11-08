@@ -54,8 +54,8 @@ public class JwtAuthenticationController {
         }
     }
 
-    @GetMapping(value = "/api/refresh")
-    public ResponseEntity<?> refreshtoken(HttpServletRequest request) throws Exception {
+    @GetMapping(value = "/refresh")
+    public ResponseEntity<?> refreshToken(HttpServletRequest request) throws Exception {
         // From the HttpRequest get the claims
         DefaultClaims claims = (io.jsonwebtoken.impl.DefaultClaims) request.getAttribute("claims");
         Map<String, Object> expectedMap = getMapFromIoJsonwebtokenClaims(claims);
@@ -71,8 +71,8 @@ public class JwtAuthenticationController {
         return expectedMap;
     }
 
-    @PostMapping(value = "/api/match")
-    public void match(@RequestBody JwtRequest login) { userService.match(login); }
+    @PostMapping(value = "/match")
+    public void match(@RequestBody JwtRequest authenticationRequest) { userService.match(authenticationRequest); }
 }
 
 

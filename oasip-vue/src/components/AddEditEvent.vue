@@ -1,5 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue'
+import {events as eventsObj} from '../untils/untils.js'
+import jwt_decode from "jwt-decode"
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 dayjs.extend(utc)
@@ -27,14 +29,11 @@ const newEvent = computed(() => {
   }
 })
 
+const token = localStorage.getItem('token')
+const refreshToken = localStorage.getItem('refreshToken')
+const tokenDecode = token !== null ? jwt_decode(token) : ""
+const refreshTokenDecode = refreshToken !== null ? jwt_decode(refreshToken) : ""
 const selectedEventCategory = ref(0)
-const findDuration = () => {
-  noCategory.value = false
-  const eventCategory = props.eventCategories.find(eventCategory => eventCategory.id === selectedEventCategory.value)
-  newEvent.value.eventCategoryId = selectedEventCategory.value
-  newEvent.value.eventDuration = eventCategory.eventDuration;
-} 
-
 const startTime = ref(dayjs().format('YYYY-MM-DDTHH:mm'))
 const past = ref(false)
 const noCategory = ref(false)
@@ -48,6 +47,14 @@ const noName = ref(false)
 const isOverlap = ref(false)
 const checkDate = ref(false)
 const descErrMsg = ref(false)
+const eventsByCategoryAndDate = ref([])
+
+const findDuration = () => {
+  noCategory.value = false
+  const eventCategory = props.eventCategories.find(eventCategory => eventCategory.id === selectedEventCategory.value)
+  newEvent.value.eventCategoryId = selectedEventCategory.value
+  newEvent.value.eventDuration = eventCategory.eventDuration;
+} 
 
 const changeStartTime = () => {
   noStartTime.value = false
@@ -77,17 +84,11 @@ const changeStartTime = () => {
   }
 }
 
-const url = import.meta.env.PROD ?  import.meta.env.VITE_API_URL : 'http://localhost:8080/api';
-const eventsByDateAndCategory = ref([])
-
-const getEventsByDateAndCategory = async (eventCategoryId, startDateTime) => {
-  const res = await fetch(`${url}/events/${eventCategoryId}/${startDateTime}`)
-  if(res.status === 200) {
-    eventsByDateAndCategory.value = await res.json()
-  } else console.log('Cannot get events by date and category')
+const getEventsByCategoryAndDate = async (eventCategoryId, startDateMidNightTime) => {
+  eventsByCategoryAndDate.value = await eventsObj.getEventsByCategoryAndDate(eventCategoryId, startDateMidNightTime)
 }
 
-const checkOverlapTime = async (eventCategoryId, startDateTime) => {
+const checkOverlapTime = async (eventCategoryId, startDateMidNightTime) => {
   if(newEvent.value.eventCategoryId === undefined && newEvent.value.eventStartTime === undefined) {
     noCategory.value = true
     noStartTime.value = true
@@ -96,16 +97,21 @@ const checkOverlapTime = async (eventCategoryId, startDateTime) => {
   } else if(newEvent.value.eventCategoryId === undefined) {
     noCategory.value = true;
   } else {
-    await getEventsByDateAndCategory(eventCategoryId, startDateTime)
-    isOverlap.value = eventsByDateAndCategory.value.some(e => ((e.eventStartTime < dayjs(newEvent.value.eventStartTime).utc().format() && (dayjs(e.eventStartTime).utc().add(e.eventDuration, 'm').format()) > dayjs(newEvent.value.eventStartTime).utc().format()) ||
+    await getEventsByCategoryAndDate(eventCategoryId, startDateMidNightTime)
+    isOverlap.value = eventsByCategoryAndDate.value.some(e => ((e.eventStartTime < dayjs(newEvent.value.eventStartTime).utc().format() && (dayjs(e.eventStartTime).utc().add(e.eventDuration, 'm').format()) > dayjs(newEvent.value.eventStartTime).utc().format()) ||
       (e.eventStartTime >= dayjs(newEvent.value.eventStartTime).utc().format() && e.eventStartTime < (dayjs(newEvent.value.eventStartTime).add(newEvent.value.eventDuration, 'm').utc().format()))))
     if(isOverlap.value === false && past.value === false){
+      if(refreshToken !== null) {
+        newEvent.value.bookingEmail = refreshTokenDecode.sub
+      } else {
+        newEvent.value.bookingEmail = tokenDecode.sub
+      }
+      
       showNotes.value = true
       editShow.value = !editShow.value
       checkDate.value = !checkDate.value
     }
   }
-  console.log(eventsByDateAndCategory.value)
 }
 
 const validateEmail = () => {
@@ -203,7 +209,7 @@ const checkDesc = () => {
 
     <p class="ml-4 "> <span class="font-bold"> Name : </span>  <input type="text" :disabled="newEvent.id > 0" maxlength="101" class="border-2 border-black text-black ml-1 mt-2 bg-zinc-300 disabled:opacity-50 disabled:hover:cursor-not-allowed	" v-model="newEvent.bookingName" @click="noName = false" :onchange="checkName"> 
     <span v-show="noName" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mx-2 ">Name must be between 1 to 100 characters <button @click=" noName = false">x</button></span>
-      <span class="font-bold"> Email : </span> <input type="email" :disabled="newEvent.id > 0" maxlength="100"  class="border-2 border-black text-black ml-1 mt-2 bg-zinc-300 disabled:opacity-50 disabled:hover:cursor-not-allowed" v-model="newEvent.bookingEmail"  :onchange="check">
+      <span class="font-bold"> Email : </span> <input type="email" :disabled="(refreshToken !== null || token !== null) || (newEvent.id > 0)" maxlength="100"  class="border-2 border-black text-black ml-1 mt-2 bg-zinc-300 disabled:opacity-50 disabled:hover:cursor-not-allowed" v-model="newEvent.bookingEmail"  :onchange="check">
           <span v-show="noValidEmail" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded absolute mx-20 right">Not a valid Email Address format <button @click=" noValidEmail = false">x</button></span>
           <span v-show="checkEmailNull" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded absolute mx-20 right">Email Address must not be empty  <button @click=" checkEmailNull = false">x</button></span>
     </p>

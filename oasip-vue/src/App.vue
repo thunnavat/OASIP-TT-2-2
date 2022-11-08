@@ -1,51 +1,41 @@
 <script setup>
-import router from './router';
-import { onBeforeMount , ref } from 'vue';
-import jwt_decode from "jwt-decode";
+import { onBeforeMount } from 'vue'
+import jwt_decode from "jwt-decode"
+import {authentication as authenticationObj} from './untils/untils.js'
+import router from './router'
 
 const token = localStorage.getItem('token')
-const url = import.meta.env.PROD ?  import.meta.env.VITE_API_URL : '/api';
+const refreshToken = localStorage.getItem('refreshToken')
+
 const logout = () => { 
-  localStorage.clear();
-  router.replace({name: 'Login'})
-    setTimeout(() => {
-      router.go(0)
-    })
+  authenticationObj.logout()
  }
  //  Testing area
 // ต้องใช้ npm install jwt-decode นะ
-const decode = token !== null ? jwt_decode(token) : ""
-let refreshtoken = ref('') 
+const tokenDecode = token !== null ? jwt_decode(token) : ""
+const refreshTokenDecode = refreshToken !== null ? jwt_decode(refreshToken) : ""
 
-// เปรียบวันหมดอายุกับปัจจุบัน
 const refresh = async () => {
-  console.log('this is refresh function')
-  const res = await fetch(`${url}/refresh`, {
-    method: 'GET',
-    headers: {
-      'Authorization': token,
-      'isRefreshToken': 'true'
-    }
-  })
-  if (res.status === 200) {
-    console.log('succeed')
-    refreshtoken.value = await res.json()
-    localStorage.setItem('refreshtoken', 'Bearer ' + refreshtoken.value.token)
-  }
-  else {
-    console.log('cannot get token')
-  }
+  await authenticationObj.refresh()
 }
-  const checkexpired = () => {
-    if(Date.now() >= decode.exp * 1000){
+
+const checkExpired = () => {
+  if (refreshTokenDecode !== "") {
+    if (Date.now() >= refreshTokenDecode.exp * 1000) {
+      alert('Time out please login again')
+      localStorage.clear()
+      router.replace({name: 'Login'})
+      setTimeout(() => {
+        router.go(0)
+      })
+    }
+  } else if (tokenDecode !== "" && Date.now() >= tokenDecode.exp * 1000) {
     refresh()
-    }
-  else{
-    console.log('didnot')
-  }
+  } else console.log('Token is not expired') 
 }
+
 onBeforeMount(() => {
-  checkexpired()
+  checkExpired()
 })
 
 </script>

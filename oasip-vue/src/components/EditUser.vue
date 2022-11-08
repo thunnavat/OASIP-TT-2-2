@@ -18,7 +18,7 @@ const editUser = computed(() => {
   }
 })
 
-const roles = ["admin" , "lecturer" , "student"]
+const roles = ["ADMIN" , "LECTURER" , "STUDENT"]
 const showNameError = ref(false)
 const showEmailError = ref(false)
 const nameErrorMsg = ref()
