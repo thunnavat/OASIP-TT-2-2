@@ -184,7 +184,7 @@ const checkDesc = () => {
 
 <template>
 <div>
-  <div>
+  <div >
     <h1 class="text-xl font-bold mb-3 ml-4">ADD NEW EVENT</h1>
     <span>
       

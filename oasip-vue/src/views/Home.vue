@@ -5,6 +5,7 @@ import ShowDetail from '../components/ShowDetail.vue'
 import dayjs from 'dayjs'
 import AddEditEvent from '../components/AddEditEvent.vue'
 import {events as eventsObj, eventCategories as eventCategoriesObj} from '../untils/untils.js'
+import jwt_decode from "jwt-decode"
 
 const events = ref([])
 const eventCategories = ref([])
@@ -18,6 +19,7 @@ const newestEvent = ref({})
 const token = localStorage.getItem('token')
 const isModal = ref(false)
 const currentEvent = ref({})
+const tokenDecode = token !== null ? jwt_decode(token) : ""
 
 onBeforeMount(async () => {
   events.value = await eventsObj.getEvents()
@@ -97,14 +99,14 @@ console.log(unique);
     First
   </div>
   <div v-else>
-  <div class="mt-4 flex justify-end">
-    <button @click="clickForBooking = !clickForBooking" class="text-white bg-black mr-4 border border-solid hover:bg-[#855B52]  active:bg-cyan-600 font-bold uppercase text-sm py-3 rounded outline-none focus:outline-none ease-linear transition-all duration-150 active show px-3"> BOOKING </button>
+  <div class="mt-4 flex justify-end mr-4">
+    <button @click="clickForBooking = !clickForBooking" class="text-white bg-black mr-4 border border-solid hover:bg-[#855B52]  active:bg-cyan-600 font-bold uppercase text-sm py-3 rounded outline-none focus:outline-none ease-linear transition-all duration-150 active show px-3" > BOOKING </button>
     <!-- Select Bar -->
     <select id="select-bar" class="select ml-4 mb-6 mt-3 mr-4  text-black bg-blue-300 rounded font-bold" v-model="selectedView" :onchange="change">
       <option v-for="(eventView, index) in eventViews" :key="index" class="font-bold">{{ eventView }}</option> 
     </select>
     <!-- User Select Specific day or category -->
-    <div class="absolute top-10 right-5">
+    <div class="absolute top-48 right-5">
       <input type="date" v-show="selectedView === 'DAY'" v-model="selectedDate" :onchange="change">
       <select v-show="selectedView === 'CATEGORY'" id="select-bar" v-model="selectedCategory"  :onchange="change">
        <option v-for="eventCategory in eventCategories" :key="eventCategory.id" :value="eventCategory.id" class="font-bold">{{ eventCategory.eventCategoryName }}</option> 
@@ -134,7 +136,7 @@ console.log(unique);
         <span>{{ emptyMsg }}</span>
       </div>
       <div v-else>
-        <event-list :events="events" @detail="getDetail" @deleteEvent="deleteEvent" @editEvent="toEditMode"/>
+        <event-list :events="events" :role="tokenDecode.role" @detail="getDetail" @deleteEvent="deleteEvent" @editEvent="toEditMode"/>
       </div>
     </div>
   </div>

@@ -4,6 +4,7 @@ import UserList from '../components/UserList.vue'
 import UserDetail from '../components/UserDetail.vue'
 import EditUser from '../components/EditUser.vue'
 import {users as usersObj} from '../untils/untils.js'
+import jwt_decode from "jwt-decode"
 
 const users = ref([])
 const emptyMsg = 'No Users'
@@ -11,6 +12,7 @@ const token = localStorage.getItem('token')
 const currentUser = ref({})
 const newestUser = ref({})
 const editMode = ref(false)
+const tokenDecode = token !== null ? jwt_decode(token) : ""
 
 const getUsers = async () => {
   users.value = await usersObj.getUsers()
@@ -75,6 +77,13 @@ const closeModal = (e) => {
     You have to 
     <router-link :to="{name:'Login'}" class="text-blue-700 font-semibold underline">Login</router-link>
     First
+  </div>
+  <div v-else-if="tokenDecode.role !== 'ADMIN' ">
+    <div class="box-border p-4">
+      <div class="font-semibold flex justify-center items-center text-black box-content bg-[#c4c4c4] h-96">
+        <span>You do not have permission to access this page</span>
+      </div>
+    </div>
   </div>
   <div v-else>
     <div class="box-border p-4">
