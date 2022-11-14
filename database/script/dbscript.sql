@@ -39,6 +39,25 @@ CREATE TABLE users (
   UNIQUE INDEX name_UNIQUE (name ASC) VISIBLE,
   UNIQUE INDEX email_UNIQUE (email ASC) VISIBLE
 );
+CREATE TABLE eventcategoryowner (
+  eventCategoryOwnerId INT NOT NULL AUTO_INCREMENT,
+  eventCategoryId INT NOT NULL,
+  userId INT NOT NULL,
+  PRIMARY KEY (eventcategoryownerId, eventCategoryId, userId),
+  INDEX fk_eventcategory_has_user_user1_idx (userId ASC) VISIBLE,
+  INDEX fk_eventcategory_has_user_eventcategory_idx (eventCategoryId ASC) VISIBLE,
+  CONSTRAINT fk_eventcategory_has_user_eventcategory
+    FOREIGN KEY (eventCategoryId)
+    REFERENCES eventcategories (eventCategoryId)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_eventcategory_has_user_user1
+    FOREIGN KEY (userId)
+    REFERENCES users (userId)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+);
+
 INSERT INTO eventcategories (eventCategoryName,eventCategoryDescription,eventDuration)
 VALUES ('Project Management Clinic', 'ตารางนัดหมายนี้ใช้สำหรับนัดหมาย Project Management Clinic ในวิชา INT221 integrated project I', 30);
 INSERT INTO eventcategories (eventCategoryName,eventCategoryDescription,eventDuration)
@@ -49,6 +68,7 @@ INSERT INTO eventcategories (eventCategoryName,eventCategoryDescription,eventDur
 VALUES ('Client-side Clinic', 'ตารางนัดหมายนี้ใช้สำหรับนัดหมาย  Client-side Clinic ในวิชา INT221 integrated project I', 60);
 INSERT INTO eventcategories (eventCategoryName,eventCategoryDescription,eventDuration)
 VALUES ('Server-side Clinic', 'ตารางนัดหมายนี้ใช้สำหรับนัดหมาย Server-side Clinic ในวิชา INT221 integrated project I', 45);
+
 INSERT INTO events (bookingName,bookingEmail,eventStartTime,eventDuration,eventCategoryId)
 values ('สมเกียรติ ขยันเรียน กลุ่ม TT-2','somkiat.k@gmail.com','2022-10-12 10:10:10',30,'1');
 INSERT INTO events (bookingName,bookingEmail,eventStartTime,eventDuration,eventCategoryId)
@@ -70,7 +90,36 @@ values ('Nattapon Chusriwan กลุ่ม US-5','nattapon_champ@gmail.com','20
 INSERT INTO events (bookingName,bookingEmail,eventStartTime,eventDuration,eventCategoryId)
 values ('ไชยา ชูเจริญ กลุ่ม KP-5','chaitya_chu@gmail.com','2022-10-04 12:20:00',30,'1');
 
-INSERT INTO users (name,email,password,role)
-values ('thunnavat','thunnavatadmin@gmail.com','$argon2id$v=19$m=4096,t=3,p=1$SORiYb6dy7rL7mxYQDzm+Q$tmVvQTPMNJDTAt7DvfG4ZVggFLEJvTTWjgN14e8IjUw','ADMIN');
-INSERT INTO users (name,email,password,role)
-values ('thunnavatstu','thunnavatstudent@gmail.com','$argon2id$v=19$m=4096,t=3,p=1$KRi8+l82yICiLupDPB/9dg$QDKiYR3VjVZu78gUWOkFlSLadYeEWPhyNBxpD+MMHN4','STUDENT');
+INSERT INTO users (name, email, password, role)
+values ('OASIP ADMIN','oasip.admin@kmutt.ac.th','$argon2id$v=19$m=4096,t=3,p=1$sYXzbUOqBoHY1NfhJ8cjnw$H6+adWySiFPgcUogJK3hEhcF6Y4fusy7tcXYEL+f0cQ','ADMIN');
+INSERT INTO users (name, email, password, role)
+values ('Olarn Rojanapornpun','olarn.roj@kmutt.ac.th','$argon2id$v=19$m=4096,t=3,p=1$Sx7y2jxKZSjpWUV4srd8eg$AMH09iFiPQgAZ00cAdN3Gucqfhx2kRo3tQbHeLSR0RE','LECTURER');
+INSERT INTO users (name, email, password, role)
+values ('Pichet Limvachiranan','pichet.limv@kmutt.ac.th','$argon2id$v=19$m=4096,t=3,p=1$46EB43gQ46Z1/EmdqxtKNA$7m6cWGO2iDlFl/ETDYuYf+ArnSjRnsNwXLIP18DTYQY','LECTURER');
+INSERT INTO users (name, email, password, role)
+values ('Umaporn Supasitthimethee','umaporn.sup@kmutt.ac.th','$argon2id$v=19$m=4096,t=3,p=1$1Z2UK1zC76FIQeLH54GVAQ$qfXcHF31LnuWpt37QAcWyNp8PdbOQ+jjaV1xWXixS0M','LECTURER');
+INSERT INTO users (name, email, password, role)
+values ('Siam Yamsaengsung','siam.yam@kmutt.ac.th','$argon2id$v=19$m=4096,t=3,p=1$C4pPaNWKTnZQX2mPs14jlg$rQ5W5NYKqGOu1B4GkUWq8cFbcg2peFWGjpUMr9Nkm8g','LECTURER');
+INSERT INTO users (name, email, password, role)
+values ('Sunisa Sathapornvajana','sunisa.sat@kmutt.ac.th','$argon2id$v=19$m=4096,t=3,p=1$29/ffaszvjvi3CZO45bSCg$kKpfq5WEswoqa/LfyIZzQaQ6AFdjhyiYjXRCfMiTnwg','LECTURER');
+INSERT INTO users (name, email, password, role)
+values ('Somchai Jaidee','somchai.jai@kmutt.ac.th','$argon2id$v=19$m=4096,t=3,p=1$dmsOy7LPTjmooPu+P2oTZA$NZFTFd3f0K1Sp19aaUwyn3jgiy15yFcXhp8E4/1yXoI','STUDENT');
+INSERT INTO users (name, email, password, role)
+values ('Komkrid Rakdee','komkrid.rak@mail.kmutt.ac.th','$argon2id$v=19$m=4096,t=3,p=1$8W61ZOC5RU7sJP5kKRbSqg$OLwZNPeMqxp+g0Vbn+odcA47XMClFN+IswTueVah7F0','STUDENT');
+INSERT INTO users (name, email, password, role)
+values ('สมเกียรติ ขยันเรียน','somkiat.kay@kmutt.ac.th','$argon2id$v=19$m=4096,t=3,p=1$gBqgjspF45FcIKQEw8GmaQ$alrOCZ0YrDqOu8/aZiLDMGZo4vFkSEAXA0YoHhY0BDQ','STUDENT');
+
+INSERT INTO eventcategoryowner (eventCategoryId, userId)
+values (1, 2);
+INSERT INTO eventcategoryowner (eventCategoryId, userId)
+values (2, 5);
+INSERT INTO eventcategoryowner (eventCategoryId, userId)
+values (2, 2);
+INSERT INTO eventcategoryowner (eventCategoryId, userId)
+values (3, 6);
+INSERT INTO eventcategoryowner (eventCategoryId, userId)
+values (4, 4);
+INSERT INTO eventcategoryowner (eventCategoryId, userId)
+values (5, 3);
+INSERT INTO eventcategoryowner (eventCategoryId, userId)
+values (5, 2);

@@ -12,11 +12,16 @@ import sit.int221.oasipservice.dtos.CreateEventDTO;
 import sit.int221.oasipservice.dtos.UpdateEventDTO;
 import sit.int221.oasipservice.entities.Event;
 import sit.int221.oasipservice.entities.EventCategory;
+import sit.int221.oasipservice.entities.EventCategoryOwner;
+import sit.int221.oasipservice.entities.User;
+import sit.int221.oasipservice.repositories.EventCategoryOwnerRepository;
 import sit.int221.oasipservice.repositories.EventRepository;
 import sit.int221.oasipservice.repositories.EventCategoryRepository;
+import sit.int221.oasipservice.repositories.UserRepository;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,6 +31,8 @@ import java.util.List;
 public class EventService {
     private final EventRepository eventRepository;
     private final EventCategoryRepository eventCategoryRepository;
+    private final UserRepository userRepository;
+    private final EventCategoryOwnerRepository eventCategoryOwnerRepository;
     private final ModelMapper modelMapper;
     private final JwtTokenUtil jwtTokenUtil;
 
@@ -36,7 +43,16 @@ public class EventService {
 
         if (role.equals("STUDENT")) {
             return eventRepository.findAllByBookingEmailOrderByEventStartTimeDesc(email);
+        } else if (role.equals("LECTURER")) {
+            User user = userRepository.findByEmailIgnoreCase(email);
+            List<EventCategoryOwner> eventCategoryOwner = eventCategoryOwnerRepository.findAllByUser(user);
+            List<Event> events = new ArrayList<>();
+            if (eventCategoryOwner != null) {
+                eventCategoryOwner.forEach(e -> events.addAll(e.getEventCategory().getEvents()));
+            }
+            return events;
         }
+
         return eventRepository.findAll(Sort.by(Sort.Direction.DESC, "eventStartTime"));
     }
 

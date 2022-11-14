@@ -103,7 +103,7 @@ const checkOverlapTime = async (eventCategoryId, startDateMidNightTime) => {
     if(isOverlap.value === false && past.value === false){
       if(refreshToken !== null) {
         newEvent.value.bookingEmail = refreshTokenDecode.sub
-      } else {
+      } else if(token !== null) {
         newEvent.value.bookingEmail = tokenDecode.sub
       }
       

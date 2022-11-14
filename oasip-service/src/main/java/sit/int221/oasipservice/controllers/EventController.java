@@ -1,6 +1,7 @@
 package sit.int221.oasipservice.controllers;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import sit.int221.oasipservice.dtos.CreateEventDTO;
 import sit.int221.oasipservice.dtos.UpdateEventDTO;
@@ -55,17 +56,20 @@ public class EventController {
     }
 
     @PostMapping("")
+    @PreAuthorize("!hasAuthority('LECTURER')")
     @ResponseStatus(HttpStatus.CREATED)
     public Event create(HttpServletRequest request, @Valid @RequestBody CreateEventDTO newEvent) {
         return service.create(request, newEvent);
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("!hasAuthority('LECTURER')")
     public void delete(HttpServletRequest request, @PathVariable Integer id) {
         service.delete(request, id);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("!hasAuthority('LECTURER')")
     public Event update(HttpServletRequest request, @Valid @RequestBody UpdateEventDTO updateEvent, @PathVariable Integer id) {
         return service.update(request, updateEvent, id);
     }

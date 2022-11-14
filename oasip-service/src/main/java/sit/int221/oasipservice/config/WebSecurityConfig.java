@@ -54,6 +54,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/api/users/**").hasAuthority("ADMIN")
                 .antMatchers("/api/match").hasAuthority("ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/events").permitAll()
+                .antMatchers("/api/events/categoryDate").permitAll()
+                .antMatchers("/api/eventCategories").permitAll()
                 .antMatchers("/api/login").permitAll()
                 .antMatchers("/api/refresh").permitAll()
                 // all other requests need to be authenticated

@@ -1,4 +1,5 @@
 <script setup>
+import jwt_decode from "jwt-decode"
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 dayjs.extend(utc)
@@ -10,6 +11,11 @@ defineProps({
    default: []
   }
 })
+
+const token = localStorage.getItem('token')
+const refreshToken = localStorage.getItem('refreshToken')
+const tokenDecode = token !== null ? jwt_decode(token) : ""
+const refreshTokenDecode = refreshToken !== null ? jwt_decode(refreshToken) : ""
 
 </script>
  
@@ -31,9 +37,9 @@ defineProps({
           <span class="text-[#878787] mr-1">DURATION: </span><span class="mr-28">{{ event.eventDuration }} mins</span>  
         </li>
         <li class="relative mt-6">
-          <button @click="$emit('deleteEvent', event.id)" class="text-white bg-black mr-4 border border-solid hover:bg-[#855B52]  active:bg-cyan-600 font-bold uppercase text-sm py-3 rounded outline-none focus:outline-none ease-linear transition-all duration-150 active show px-3">
+          <button v-show="refreshTokenDecode.role !== 'LECTURER' || tokenDecode.role !== 'LECTURER'" @click="$emit('deleteEvent', event.id)" class="text-white bg-black mr-4 border border-solid hover:bg-[#855B52]  active:bg-cyan-600 font-bold uppercase text-sm py-3 rounded outline-none focus:outline-none ease-linear transition-all duration-150 active show px-3">
             DELETE</button>
-            <button @click="$emit('editEvent', event)" class="text-white bg-black mr-4 border border-solid hover:bg-[#855B52]  active:bg-cyan-600 font-bold uppercase text-sm py-3 rounded outline-none focus:outline-none ease-linear transition-all duration-150 active show px-3">
+            <button v-show="refreshTokenDecode.role !== 'LECTURER' || tokenDecode.role !== 'LECTURER'" @click="$emit('editEvent', event)" class="text-white bg-black mr-4 border border-solid hover:bg-[#855B52]  active:bg-cyan-600 font-bold uppercase text-sm py-3 rounded outline-none focus:outline-none ease-linear transition-all duration-150 active show px-3">
             EDIT</button>
           <span @click="$emit('detail' , event)" class="grid justify-end leading-3 justify-items-center absolute bottom-0 right-0 hover:cursor-pointer">
             <span class="iconify" data-icon="noto:bear" style="width: 38px; height: 38px;"></span>
