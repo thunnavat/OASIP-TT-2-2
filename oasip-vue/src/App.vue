@@ -63,7 +63,7 @@ const closeTutorial = (t) => {
           <router-link :to="{name:'AboutUs', params:{id:'about_us'}}" class="block mt-4 sm:inline-block sm:mt-0 text-white hover:text-gray-300 ml-4">About Us</router-link>
           <span v-show="token !== null"> <TutorialIcon @click="showTutorial = true" class="absolute right-60 mt-4 sm:inline-block sm:mt-0 text-white hover:text-gray-300 hover:cursor-pointer ml-4" /> </span>
           <router-link :to="{name:'AddUser', params:{id:'adduser'}}" class="absolute right-36 mt-4 sm:inline-block sm:mt-0 text-white hover:text-gray-300 ml-4 ">Add User</router-link>
-          <router-link v-if="token === null" :to="{id:'Login'}" class="absolute right-16 mt-4 sm:inline-block sm:mt-0 text-white hover:text-gray-300 ml-4 ">Login</router-link>
+          <router-link v-if="token === null" :to="{name:'Login'}" class="absolute right-16 mt-4 sm:inline-block sm:mt-0 text-white hover:text-gray-300 ml-4 ">Login</router-link>
           <div v-else class="w-full block flex-grow sm:flex sm:items-center sm:w-auto ">
             <button @click="logout" class=" absolute right-16 mt-4 mb-5 sm:inline-block sm:mt-0 text-white hover:text-gray-300 ml-4 text-sm sm:flex-grow font-medium"> Sign Out </button>
           </div>     

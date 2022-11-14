@@ -5,6 +5,7 @@ import {authentication as authenticationObj} from '../untils/untils.js'
 const login = async (authenticationRequest) => {
   await authenticationObj.login(authenticationRequest)
 }
+
 </script>
  
 <template>

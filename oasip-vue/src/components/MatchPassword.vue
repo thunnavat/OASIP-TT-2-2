@@ -28,6 +28,9 @@ const modal = ref(true)
     <input type="password"   maxlength="15" autocomplete="on" class="border-2 border-black text-black ml-2 mt-2 bg-zinc-300 disabled:opacity-50 disabled:hover:cursor-not-allowed	" v-model="login.password" @keyup.enter=" $emit('login', {email: login.email, password: login.password})" > <br>  
     <button class="mt-6  border border-solid bg-white  border-yellow-800 hover:bg-black hover:text-white font-bold uppercase text-sm py-3 rounded outline-none focus:outline-none ease-linear transition-all duration-150 active show px-3"
     @click=" $emit('login', {email: login.email, password: login.password}) ">Login</button>
+    <button class="mt-6  border border-solid bg-white  border-yellow-800 hover:bg-black hover:text-white font-bold uppercase text-sm py-3 rounded outline-none focus:outline-none ease-linear transition-all duration-150 active show px-3">
+      <router-link :to="{name:'Home', params:{id:'home'}}">Login with Guest</router-link>
+    </button>
         </div>
         </div>
 </div>
