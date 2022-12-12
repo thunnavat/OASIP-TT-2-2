@@ -16,10 +16,6 @@ const props = defineProps({
   }
 })
 const count = () => {
-  // let uniqueEmail = props.events.filter((bookingEmail , index) => {
-  //   return props.events.indexOf(bookingEmail) === index
-  // })
-  // console.log(uniqueEmail)
   for(let i = 0; i < props.events.length ; i++){
     const currentEmail = props.events[i].bookingEmail
     let count = 0
@@ -28,20 +24,15 @@ const count = () => {
         count++
       }
     }
-    console.log(count)
-    if(numOfEmail.value.includes(currentEmail)){
-      console.log('a')
-    }else{
-      console.log('b')
-    }
-    console.log(numOfEmail.currentEmail)
     numOfEmail.value.push({currentEmail , count})
-    console.log(numOfEmail.value)
+    const repeatEmail = numOfEmail.value.filter((numOfEmail) => numOfEmail.currentEmail === currentEmail)
+    if(repeatEmail.length > 1){
+      numOfEmail.value.pop()
+    }
   }
 }
 const countEvent = ref(false)
 const numOfEmail = ref([])
-console.log(props.events[1].bookingEmail)
 
 const token = localStorage.getItem('token')
 const refreshToken = localStorage.getItem('refreshToken')
