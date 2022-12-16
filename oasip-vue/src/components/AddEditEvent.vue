@@ -48,7 +48,8 @@ const isOverlap = ref(false)
 const checkDate = ref(false)
 const descErrMsg = ref(false)
 const eventsByCategoryAndDate = ref([])
-const fileName = ref("")
+const fileName = ref()
+const currentFile = ref()
 
 const findDuration = () => {
   noCategory.value = false
@@ -186,17 +187,16 @@ const updateFile = (e) => {
   const file = e.target.files[0]
   if((file.size / 1048576) > 10){
     alert('The file size cannot be larger than 10 MB')
-    fileName.value = undefined
-    e.target.value = ""
   }
   else{
-    fileName.value = file.name
+    currentFile.value = file  // upload currentFile.value ไปยัง backend
+    fileName.value = currentFile.value.name
   }
 }
 
 const removeFile = () => {
-  document.getElementById('fileItem').value = ""
-  fileName.value = undefined
+  currentFile.value = undefined
+  fileName.value = currentFile.value
 }
 
 </script>
@@ -240,7 +240,7 @@ const removeFile = () => {
     <label for="fileItem" class="text-white bg-black mr-4 border border-solid hover:bg-[#855B52]  active:bg-cyan-600 font-bold uppercase text-sm py-3 rounded outline-none focus:outline-none ease-linear transition-all duration-150 active show px-3 hover:cursor-pointer">
       > Upload File</label><br/>
     <input type="file" id="fileItem" :onchange="updateFile" class="hidden" /><br/>
-    <p v-show="fileName" class="text-transform: uppercase ">
+    <p v-show="fileName">
       <span class="font-bold">Selected File : </span> {{fileName}}&nbsp;
       <button class="text-white bg-red-600  hover:bg-red-700  active:bg-red-900 font-bold uppercase text-sm py-1 rounded outline-none focus:outline-none ease-linear transition-all duration-150 active show px-3 hover:cursor-pointer" @click="removeFile">Remove File</button>
     </p>
