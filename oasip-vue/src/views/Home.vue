@@ -25,6 +25,7 @@ onBeforeMount(async () => {
   eventCategories.value = await eventCategoriesObj.getEventCategories()
   if (token !== null) {
     events.value = await eventsObj.getEvents()
+    files.value = await eventsObj.getFile(events.fileAttechment)
   }
 })
 
