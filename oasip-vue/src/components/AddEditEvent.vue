@@ -199,6 +199,12 @@ const removeFile = () => {
   fileName.value = currentFile.value
 }
 
+const uploadFile = () => {
+  let formData = new FormData()
+  formData.append("file", currentFile.value)
+  fetch('/upload', {method: "POST", body: formData})
+}
+
 </script>
 
 <template>
@@ -250,7 +256,7 @@ const removeFile = () => {
       disabled:opacity-50 disabled:hover:cursor-not-allowed">
       Save</button>
       <button :disabled="isDisabled && (noName || checkEmailNull)" v-else  @click= "check() , isDisabled === true ? '' : $emit('addEvent', {bookingName : newEvent.bookingName , eventCategoryId: newEvent.eventCategoryId , eventStartTime: dayjs(newEvent.eventStartTime).utc().format(),
-      bookingEmail: newEvent.bookingEmail, eventNotes: newEvent.eventNotes} , clear())"  class="text-white bg-black mr-4 border border-solid hover:bg-[#855B52]  active:bg-cyan-600 font-bold uppercase text-sm py-3 rounded outline-none focus:outline-none ease-linear transition-all duration-150 active show px-3 disabled:opacity-50 disabled:hover:cursor-not-allowed">
+      bookingEmail: newEvent.bookingEmail, eventNotes: newEvent.eventNotes} , clear(), uploadFile())"  class="text-white bg-black mr-4 border border-solid hover:bg-[#855B52]  active:bg-cyan-600 font-bold uppercase text-sm py-3 rounded outline-none focus:outline-none ease-linear transition-all duration-150 active show px-3 disabled:opacity-50 disabled:hover:cursor-not-allowed">
       Add</button>
       <button @click="$emit('cancel') , clear()" class="text-white bg-black mr-4 border border-solid hover:bg-[#855B52]  active:bg-cyan-600 font-bold uppercase text-sm py-3 rounded outline-none focus:outline-none ease-linear transition-all duration-150 active show px-3">Cancel</button>
     </div>
