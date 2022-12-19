@@ -57,6 +57,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/api/events").permitAll()
                 .antMatchers("/api/events/categoryDate").permitAll()
                 .antMatchers("/api/eventCategories").permitAll()
+                .antMatchers("/api/files/download").permitAll()
                 .antMatchers("/api/login").permitAll()
                 .antMatchers("/api/refresh").permitAll()
                 // all other requests need to be authenticated
