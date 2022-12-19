@@ -92,7 +92,6 @@ export const events = {
     const res = await fetch(`${url}/events`, {
       method: 'POST',
       headers: {
-        'content-type': 'application/json',
         'Authorization': refreshToken !== null ? refreshToken : token
       },
       body: newEvent

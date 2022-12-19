@@ -198,15 +198,24 @@ const removeFile = () => {
   currentFile.value = undefined
   fileName.value = currentFile.value
 }
+let formData = new FormData()
 
-const uploadFile = () => {
-  let formData = new FormData()
+const uploadFile = (event) => {
+  if (currentFile.value !== undefined){
   formData.append("file", currentFile.value)
-  formData.append("bookingName", newEvent.bookingName)
-  formData.append("bookingEmail", newEvent.bookingEmail)
-  formData.append("eventCategoryId", newEvent.eventCategoryId)
-  formData.append("eventStartTime", dayjs(newEvent.eventStartTime).utc().format())
-  formData.append("eventNotes", newEvent.eventNotes)
+  formData.append("bookingName", event.bookingName)
+  formData.append("bookingEmail", event.bookingEmail)
+  formData.append("eventCategoryId", event.eventCategoryId)
+  formData.append("eventStartTime", dayjs(event.eventStartTime).utc().format())
+  formData.append("eventNotes", event.eventNotes)
+  }
+  else{
+  formData.append("bookingName", event.bookingName)
+  formData.append("bookingEmail", event.bookingEmail)
+  formData.append("eventCategoryId", event.eventCategoryId)
+  formData.append("eventStartTime", dayjs(event.eventStartTime).utc().format())
+  formData.append("eventNotes", event.eventNotes)
+  }
 }
 
 </script>
@@ -259,7 +268,7 @@ const uploadFile = () => {
       <button :disabled="isDisabled" v-if="newEvent.id > 0" @click="changeStartTime() , isDisabled === true ? '' : $emit('updateEvent', {id: newEvent.id, eventStartTime: dayjs(newEvent.eventStartTime).utc().format(), eventNotes: newEvent.eventNotes}) " class="text-white bg-black mr-4 border border-solid hover:bg-[#855B52]  active:bg-cyan-600 font-bold uppercase text-sm py-3 rounded outline-none focus:outline-none ease-linear transition-all duration-150 active show px-3
       disabled:opacity-50 disabled:hover:cursor-not-allowed">
       Save</button>
-      <button :disabled="isDisabled && (noName || checkEmailNull)" v-else  @click= "check() , isDisabled === true ? '' :  clear(), uploadFile(), $emit('addEvent', formData)"  class="text-white bg-black mr-4 border border-solid hover:bg-[#855B52]  active:bg-cyan-600 font-bold uppercase text-sm py-3 rounded outline-none focus:outline-none ease-linear transition-all duration-150 active show px-3 disabled:opacity-50 disabled:hover:cursor-not-allowed">
+      <button :disabled="isDisabled && (noName || checkEmailNull)" v-else  @click= "check() , isDisabled === true ? '' :  clear(), uploadFile(newEvent), $emit('addEvent', formData)"  class="text-white bg-black mr-4 border border-solid hover:bg-[#855B52]  active:bg-cyan-600 font-bold uppercase text-sm py-3 rounded outline-none focus:outline-none ease-linear transition-all duration-150 active show px-3 disabled:opacity-50 disabled:hover:cursor-not-allowed">
       Add</button>
       <button @click="$emit('cancel') , clear()" class="text-white bg-black mr-4 border border-solid hover:bg-[#855B52]  active:bg-cyan-600 font-bold uppercase text-sm py-3 rounded outline-none focus:outline-none ease-linear transition-all duration-150 active show px-3">Cancel</button>
     </div>
