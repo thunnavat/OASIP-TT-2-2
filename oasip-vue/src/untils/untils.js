@@ -95,13 +95,13 @@ export const events = {
         'content-type': 'application/json',
         'Authorization': refreshToken !== null ? refreshToken : token
       },
-      body: JSON.stringify({bookingName: newEvent.bookingName, eventCategoryId: newEvent.eventCategoryId, eventStartTime: newEvent.eventStartTime, 
-        bookingEmail: newEvent.bookingEmail, eventNotes: newEvent.eventNotes})
+      body: newEvent
     })
     if (res.status === 201) {
       alert('Added Successfully')
     } else console.log('Error, cannot create new event')
   },
+
 
   updateEvent: async (updateEvent) => {
     const res = await fetch(`${url}/events/${updateEvent.id}`, {

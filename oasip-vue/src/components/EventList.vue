@@ -44,6 +44,10 @@ const refreshTokenDecode = refreshToken !== null ? jwt_decode(refreshToken) : ""
 //   return count;
 // }, {} );
 // console.log(counteve)
+const files = ref()
+const updateFile = async(filePath) => {
+  files.value = await eventsObj.getFile(filePath)
+}
 </script>
  
 <template>
@@ -77,7 +81,7 @@ const refreshTokenDecode = refreshToken !== null ? jwt_decode(refreshToken) : ""
             DELETE</button>
             <button v-show="refreshTokenDecode.role !== 'LECTURER' || tokenDecode.role !== 'LECTURER'" @click="$emit('editEvent', event)" class="text-white bg-black mr-4 border border-solid hover:bg-[#855B52]  active:bg-cyan-600 font-bold uppercase text-sm py-3 rounded outline-none focus:outline-none ease-linear transition-all duration-150 active show px-3">
             EDIT</button>
-          <span @click="$emit('detail' , event)" class="grid justify-end leading-3 justify-items-center absolute bottom-0 right-0 hover:cursor-pointer">
+          <span @click="$emit('detail' , event), event.fileAttechment == '' ? updateFile(event.fileAttechment) : ''" class="grid justify-end leading-3 justify-items-center absolute bottom-0 right-0 hover:cursor-pointer">
             <span class="iconify" data-icon="noto:bear" style="width: 38px; height: 38px;"></span>
             <span class="text-[#878787] font-bold underline hover:text-black" style="font-size: 11px;">MORE DETAILS</span>
           </span>
