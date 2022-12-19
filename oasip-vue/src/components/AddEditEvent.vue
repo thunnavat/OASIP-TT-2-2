@@ -207,14 +207,14 @@ const uploadFile = (event) => {
   formData.append("bookingEmail", event.bookingEmail)
   formData.append("eventCategoryId", event.eventCategoryId)
   formData.append("eventStartTime", dayjs(event.eventStartTime).utc().format())
-  formData.append("eventNotes", event.eventNotes)
+  formData.append("eventNotes", event.eventNotes == undefined ? '' : event.eventNotes)
   }
   else{
   formData.append("bookingName", event.bookingName)
   formData.append("bookingEmail", event.bookingEmail)
   formData.append("eventCategoryId", event.eventCategoryId)
   formData.append("eventStartTime", dayjs(event.eventStartTime).utc().format())
-  formData.append("eventNotes", event.eventNotes)
+  formData.append("eventNotes", event.eventNotes == undefined ? '' : event.eventNotes)
   }
 }
 

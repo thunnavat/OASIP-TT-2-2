@@ -5,16 +5,17 @@ const token  = localStorage.getItem('token')
 const refreshToken = localStorage.getItem('refreshToken')
 
 export const events = {
-  getFile: async (filePath) => {
-    const res = await fetch(`${url}/files/download?filePath=${filePath}`, {
-      method: 'GET',
-      headers: {
-        'Authorization': refreshToken !== null ? refreshToken : token
-      }
-    })     
-    if (res.status === 200) {
-      return await res.json()
-    } else console.log('Error, cannot get files')
+  getFile: (filePath) => {
+    // const res = await fetch(`${url}/files/download?filePath=${filePath}`, {
+    //   method: 'GET',
+    //   headers: {
+    //     'Authorization': refreshToken !== null ? refreshToken : token
+    //   }
+    // })     
+    // if (res.status === 200) {
+    //   return res.blob() 
+    // } else console.log('Error, cannot get files')
+    return `${url}/files/download?filePath=${filePath}`
   },
   getEvents: async () => {
     const res = await fetch(`${url}/events`, {
