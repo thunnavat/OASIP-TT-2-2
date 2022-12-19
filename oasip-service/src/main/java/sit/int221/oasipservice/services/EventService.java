@@ -155,13 +155,15 @@ public class EventService {
         List<Event> eventsOverlap = eventRepository.findOverlapTimeByEventCategoryId(newEvent.getEventStartTime(), endTime, eventCategory.getId());
         if (eventsOverlap.size() != 0) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Time is overlap");
 
-        String filePath = fileStorageService.uploadToFileSystem(newEvent.getFile());
-
         Event event = modelMapper.map(newEvent, Event.class);
         event.setId(null);
         event.setEventCategory(eventCategory);
         event.setEventDuration(eventCategory.getEventDuration());
-        event.setFileAttachment(filePath);
+
+        if (newEvent.getFile() != null) {
+            String filePath = fileStorageService.uploadToFileSystem(newEvent.getFile());
+            event.setFileAttachment(filePath);
+        }
 
         eventRepository.saveAndFlush(event);
 
