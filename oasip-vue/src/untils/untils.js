@@ -5,6 +5,17 @@ const token  = localStorage.getItem('token')
 const refreshToken = localStorage.getItem('refreshToken')
 
 export const events = {
+  getFile: async (filePath) => {
+    const res = await fetch(`${url}/files/download?filePath=${filePath}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': refreshToken !== null ? refreshToken : token
+      }
+    })     
+    if (res.status === 200) {
+      return await res.json()
+    } else console.log('Error, cannot get files')
+  },
   getEvents: async () => {
     const res = await fetch(`${url}/events`, {
       method: 'GET',
@@ -84,13 +95,13 @@ export const events = {
         'content-type': 'application/json',
         'Authorization': refreshToken !== null ? refreshToken : token
       },
-      body: JSON.stringify({bookingName: newEvent.bookingName, eventCategoryId: newEvent.eventCategoryId, eventStartTime: newEvent.eventStartTime, 
-        bookingEmail: newEvent.bookingEmail, eventNotes: newEvent.eventNotes})
+      body: newEvent
     })
     if (res.status === 201) {
       alert('Added Successfully')
     } else console.log('Error, cannot create new event')
   },
+
 
   updateEvent: async (updateEvent) => {
     const res = await fetch(`${url}/events/${updateEvent.id}`, {

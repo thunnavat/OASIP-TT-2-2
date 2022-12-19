@@ -48,6 +48,8 @@ const isOverlap = ref(false)
 const checkDate = ref(false)
 const descErrMsg = ref(false)
 const eventsByCategoryAndDate = ref([])
+const fileName = ref()
+const currentFile = ref()
 
 const findDuration = () => {
   noCategory.value = false
@@ -180,6 +182,33 @@ const checkDesc = () => {
   }
 }
 
+
+const updateFile = (e) => {
+  const file = e.target.files[0]
+  if((file.size / 1048576) > 10){
+    alert('The file size cannot be larger than 10 MB')
+  }
+  else{
+    currentFile.value = file
+    fileName.value = currentFile.value.name
+  }
+}
+
+const removeFile = () => {
+  currentFile.value = undefined
+  fileName.value = currentFile.value
+}
+
+const uploadFile = () => {
+  let formData = new FormData()
+  formData.append("file", currentFile.value)
+  formData.append("bookingName", newEvent.bookingName)
+  formData.append("bookingEmail", newEvent.bookingEmail)
+  formData.append("eventCategoryId", newEvent.eventCategoryId)
+  formData.append("eventStartTime", dayjs(newEvent.eventStartTime).utc().format())
+  formData.append("eventNotes", newEvent.eventNotes)
+}
+
 </script>
 
 <template>
@@ -217,11 +246,20 @@ const checkDesc = () => {
     <span v-show="descErrMsg" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded absolute mx-20 right">Description must be between 0 to 500 characters  <button @click=" descErrMsg = false">x</button></span>
     <textarea rows="4" maxlength="501" cols="180" class="border-2 border-black bg-zinc-300" v-model="newEvent.eventNotes" :onchange="checkDesc"></textarea> <br>
     <div>
+    <p><span class="font-bold">Upload File(optional)</span></p><br/>
+    <label for="fileItem" class="text-white bg-black mr-4 border border-solid hover:bg-[#855B52]  active:bg-cyan-600 font-bold uppercase text-sm py-3 rounded outline-none focus:outline-none ease-linear transition-all duration-150 active show px-3 hover:cursor-pointer">
+      > Upload File</label><br/>
+    <input type="file" id="fileItem" :onchange="updateFile" class="hidden" /><br/>
+    <p v-show="fileName">
+      <span class="font-bold">Selected File : </span> {{fileName}}&nbsp;
+      <button class="text-white bg-red-600  hover:bg-red-700  active:bg-red-900 font-bold uppercase text-sm py-1 rounded outline-none focus:outline-none ease-linear transition-all duration-150 active show px-3 hover:cursor-pointer" @click="removeFile">Remove File</button>
+    </p>
+    </div>
+    <div>
       <button :disabled="isDisabled" v-if="newEvent.id > 0" @click="changeStartTime() , isDisabled === true ? '' : $emit('updateEvent', {id: newEvent.id, eventStartTime: dayjs(newEvent.eventStartTime).utc().format(), eventNotes: newEvent.eventNotes}) " class="text-white bg-black mr-4 border border-solid hover:bg-[#855B52]  active:bg-cyan-600 font-bold uppercase text-sm py-3 rounded outline-none focus:outline-none ease-linear transition-all duration-150 active show px-3
       disabled:opacity-50 disabled:hover:cursor-not-allowed">
       Save</button>
-      <button :disabled="isDisabled && (noName || checkEmailNull)" v-else  @click= "check() , isDisabled === true ? '' : $emit('addEvent', {bookingName : newEvent.bookingName , eventCategoryId: newEvent.eventCategoryId , eventStartTime: dayjs(newEvent.eventStartTime).utc().format(),
-      bookingEmail: newEvent.bookingEmail, eventNotes: newEvent.eventNotes} , clear())"  class="text-white bg-black mr-4 border border-solid hover:bg-[#855B52]  active:bg-cyan-600 font-bold uppercase text-sm py-3 rounded outline-none focus:outline-none ease-linear transition-all duration-150 active show px-3 disabled:opacity-50 disabled:hover:cursor-not-allowed">
+      <button :disabled="isDisabled && (noName || checkEmailNull)" v-else  @click= "check() , isDisabled === true ? '' :  clear(), uploadFile(), $emit('addEvent', formData)"  class="text-white bg-black mr-4 border border-solid hover:bg-[#855B52]  active:bg-cyan-600 font-bold uppercase text-sm py-3 rounded outline-none focus:outline-none ease-linear transition-all duration-150 active show px-3 disabled:opacity-50 disabled:hover:cursor-not-allowed">
       Add</button>
       <button @click="$emit('cancel') , clear()" class="text-white bg-black mr-4 border border-solid hover:bg-[#855B52]  active:bg-cyan-600 font-bold uppercase text-sm py-3 rounded outline-none focus:outline-none ease-linear transition-all duration-150 active show px-3">Cancel</button>
     </div>
