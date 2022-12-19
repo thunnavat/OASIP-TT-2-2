@@ -2,6 +2,7 @@ package sit.int221.oasipservice.dtos;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.*;
 import java.time.Instant;
@@ -22,6 +23,8 @@ public class CreateEventDTO {
 
     @Size(max = 500, message = "Event notes is more than 500 char")
     private String eventNotes;
+
+    private MultipartFile file;
 
     @NotNull(message = "Event Category is empty")
     private Integer eventCategoryId;

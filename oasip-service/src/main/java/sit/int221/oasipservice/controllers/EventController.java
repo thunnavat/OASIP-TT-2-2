@@ -3,6 +3,7 @@ package sit.int221.oasipservice.controllers;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import sit.int221.oasipservice.dtos.CreateEventDTO;
 import sit.int221.oasipservice.dtos.UpdateEventDTO;
 import sit.int221.oasipservice.entities.Event;
@@ -10,6 +11,7 @@ import sit.int221.oasipservice.services.EventService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
 
@@ -55,10 +57,10 @@ public class EventController {
         return service.getEventsByCategoryAndDate(eventCategoryId, startDateMidNightTime);
     }
 
-    @PostMapping("")
+    @PostMapping(value = "")
     @PreAuthorize("!hasAuthority('LECTURER')")
     @ResponseStatus(HttpStatus.CREATED)
-    public Event create(HttpServletRequest request, @Valid @RequestBody CreateEventDTO newEvent) {
+    public Event create(HttpServletRequest request, @Valid CreateEventDTO newEvent) throws IOException {
         return service.create(request, newEvent);
     }
 

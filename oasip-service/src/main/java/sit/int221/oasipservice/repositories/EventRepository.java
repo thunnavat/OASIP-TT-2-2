@@ -9,6 +9,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 public interface EventRepository extends JpaRepository<Event, Integer> {
+
     List<Event> findAllByBookingEmailOrderByEventStartTimeDesc(String email);
 
     @Query("SELECT e FROM Event e WHERE e.eventCategory.id = ?1")

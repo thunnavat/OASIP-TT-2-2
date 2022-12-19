@@ -18,6 +18,7 @@ CREATE TABLE events (
  eventStartTime DATETIME NOT NULL,
  eventDuration INT NOT NULL,
  eventNotes VARCHAR(500) NULL,
+ fileAttachment VARCHAR(100) NULL,
  eventCategoryId INT NOT NULL,
  PRIMARY KEY (eventId),
  INDEX fk_events_eventcategories_idx (eventCategoryId ASC) VISIBLE,

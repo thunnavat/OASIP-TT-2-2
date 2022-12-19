@@ -29,6 +29,9 @@ public class Event {
     @Column(name = "eventNotes", length = 500)
     private String eventNotes;
 
+    @Column(name = "fileAttachment", length = 100)
+    private String fileAttachment;
+
     @ManyToOne
     @JoinColumn(name = "eventCategoryId", nullable = false)
     private EventCategory eventCategory;

@@ -1,11 +1,11 @@
 package sit.int221.oasipservice.services;
 
-import io.jsonwebtoken.impl.DefaultClaims;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import sit.int221.oasipservice.config.JwtTokenUtil;
 import sit.int221.oasipservice.dtos.CreateEventDTO;
@@ -18,11 +18,12 @@ import sit.int221.oasipservice.repositories.EventCategoryOwnerRepository;
 import sit.int221.oasipservice.repositories.EventRepository;
 import sit.int221.oasipservice.repositories.EventCategoryRepository;
 import sit.int221.oasipservice.repositories.UserRepository;
+import sit.int221.oasipservice.entities.EmailDetail;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -35,6 +36,8 @@ public class EventService {
     private final EventCategoryOwnerRepository eventCategoryOwnerRepository;
     private final ModelMapper modelMapper;
     private final JwtTokenUtil jwtTokenUtil;
+    private final EmailServiceImpl emailService;
+    private final FileStorageService fileStorageService;
 
     public List<Event> getEvents(HttpServletRequest request) {
         String jwtToken = getTokenFromHeader(request);
@@ -132,14 +135,15 @@ public class EventService {
         return event;
     }
 
-    public Event create(HttpServletRequest request, CreateEventDTO newEvent) {
+    public Event create(HttpServletRequest request, CreateEventDTO newEvent) throws IOException {
         String jwtToken = getTokenFromHeader(request);
-        String role = jwtTokenUtil.getRoleFromToken(jwtToken).get(0).toString();
-        String email = jwtTokenUtil.getEmailFromToken(jwtToken);
-
-        if (role.equals("STUDENT")) {
-            if (!email.equals(newEvent.getBookingEmail())) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Booking email must be the same as the student's email");
+        if(jwtToken != null) {
+            String role = jwtTokenUtil.getRoleFromToken(jwtToken).get(0).toString();
+            String email = jwtTokenUtil.getEmailFromToken(jwtToken);
+            if (role.equals("STUDENT")) {
+                if (!email.equals(newEvent.getBookingEmail())) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Booking email must be the same as the student's email");
+                }
             }
         }
 
@@ -151,12 +155,27 @@ public class EventService {
         List<Event> eventsOverlap = eventRepository.findOverlapTimeByEventCategoryId(newEvent.getEventStartTime(), endTime, eventCategory.getId());
         if (eventsOverlap.size() != 0) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Time is overlap");
 
+        String filePath = fileStorageService.uploadToFileSystem(newEvent.getFile());
+
         Event event = modelMapper.map(newEvent, Event.class);
         event.setId(null);
         event.setEventCategory(eventCategory);
         event.setEventDuration(eventCategory.getEventDuration());
+        event.setFileAttachment(filePath);
 
-        return eventRepository.saveAndFlush(event);
+        eventRepository.saveAndFlush(event);
+
+        EmailDetail emailDetail = new EmailDetail();
+        emailDetail.setRecipient(event.getBookingEmail());
+        emailDetail.setSubject("[OASIP]" + event.getEventCategory().getEventCategoryName() + " @ " + event.getEventStartTime());
+        emailDetail.setMsgBody("Booking Name: " + event.getBookingName() +
+                "\nEvent Category: " + event.getEventCategory().getEventCategoryName() +
+                "\nWhen: " + event.getEventStartTime() +
+                "\nEvent Notes: " + event.getEventNotes());
+
+        emailService.sendSimpleMail(emailDetail);
+
+        return event;
     }
 
     public void delete(HttpServletRequest request, Integer eventId) {
