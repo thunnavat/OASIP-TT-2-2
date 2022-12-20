@@ -14,8 +14,6 @@ services:
     depends_on:
       - db
     restart: on-failure
-    volumes:
-      - 
     environment:
       SPRING_APPLICATION_JSON: '{
         "spring.datasource.driver-class-name":"com.mysql.cj.jdbc.Driver",
