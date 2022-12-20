@@ -14,6 +14,8 @@ services:
     depends_on:
       - db
     restart: on-failure
+    volumes:
+      - ./spring/uploads:/home/spadmin/serverFile
     environment:
       SPRING_APPLICATION_JSON: '{
         "spring.datasource.driver-class-name":"com.mysql.cj.jdbc.Driver",
@@ -34,7 +36,7 @@ services:
         "spring.mail.properties.mail.smtp.starttls.enable":"true",
         "spring.servlet.multipart.max-file-size":"10MB",
         "spring.servlet.multipart.max-request-size":"10MB",
-        "upload.path":"/home/spadmin/serverFile"
+        "upload.path":"/home/spadmin/serverFile/"
       }'
  
   vue:
